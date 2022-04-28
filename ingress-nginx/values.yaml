@@ -16,10 +16,7 @@ controller:
     https: 443
 
   # Will add custom configuration options to Nginx https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
-  config: 
-    use-forwarded-headers: "true"
-    forwarded-for-header: "X-Forwarded-For"
-    ssl-redirect: "false"
+  config: {}
 
   ## Annotations to be added to the controller config configuration configmap
   ##
@@ -132,7 +129,7 @@ controller:
 
   ## DaemonSet or Deployment
   ##
-  kind: DaemonSeta
+  kind: DaemonSet
 
   ## Annotations to be added to the controller Deployment or DaemonSet
   ##
@@ -277,7 +274,6 @@ controller:
     ## Set external traffic policy to: "Local" to preserve source IP on
     ## providers supporting it
     ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
-    # externalTrafficPolicy: ""
     externalTrafficPolicy: "Local"
 
     # Must be either "None" or "ClientIP" if set. Kubernetes will default to "None".
