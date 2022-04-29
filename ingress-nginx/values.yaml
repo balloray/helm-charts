@@ -20,7 +20,7 @@ controller:
     # use-forwarded-headers: "true"
     # forwarded-for-header: "X-Forwarded-For"
     # ## Need for cert managers http challengers
-    # ## https://github.com/fuchicorp/common_tools/issues/767
+    ## https://github.com/fuchicorp/common_tools/issues/767
     # ssl-redirect: "false"
 
   ## Annotations to be added to the controller config configuration configmap
@@ -261,7 +261,9 @@ controller:
   service:
     enabled: true
 
-    annotations: {}
+    annotations: 
+      networking.gke.io/load-balancer-type: "Internal"
+      kubernetes.io/ingress.global-static-ip-name: "nginx-ing-ip"
     labels: {}
     # clusterIP: ""
 
@@ -270,7 +272,7 @@ controller:
     ##
     externalIPs: []
 
-    # loadBalancerIP: ""
+    loadBalancerIP: ""
     loadBalancerSourceRanges: []
 
     enableHttp: true
