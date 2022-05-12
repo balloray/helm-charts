@@ -51,7 +51,7 @@ ingress:
       paths: 
       - /
   tls: 
-   - secretName: kuard-tls
+   - secretName: mykuard-tls
      hosts:
      - mykuard.balloray.com
 

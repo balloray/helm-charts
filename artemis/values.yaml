@@ -52,7 +52,7 @@ ingress:
       paths: 
       - /
   tls: 
-   - secretName: artemis-tls
+   - secretName: myartemis-tls
      hosts:
        - myartemis.balloray.com
 
