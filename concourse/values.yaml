@@ -56,7 +56,7 @@ concourse:
   web:
     ## A name for this Concourse cluster, to be displayed on the dashboard page.
     ##
-    clusterName: ascension-concourse
+    clusterName:
 
     ## Enable this flag in order to customize the `client_id` and
     ## `client_secret` used when logging into the Concourse UI.
@@ -247,7 +247,7 @@ concourse:
     ##
     ## Example: http://ci.concourse-ci.org
     ##
-    externalUrl:  https://concourse.balloray.com
+    externalUrl:
 
     encryption:
       ## Enable encryption of pipeline configuration. Encryption keys can be set via secrets
@@ -1060,7 +1060,7 @@ concourse:
         ## Make sure you have local users support enabled (`concourse.web.localAuth.enabled`) and
         ## that the users were added (`secrets.localUsers`).
         ##
-        localUser: "balloray"
+        localUser: "test"
 
         # Define how to display user ID for each authentication connector.
         # Format is <connector>:<fieldname>. Valid field names are user_id,
@@ -2322,22 +2322,19 @@ web:
   ingress:
     ## Enable Ingress.
     ##
-    enabled: true
+    enabled: false
 
     ## Annotations to be added to the web ingress.
     ## Example:
     ##   kubernetes.io/ingress.class: nginx
     ##   kubernetes.io/tls-acme: 'true'
     ##
-    annotations: 
-      kubernetes.io/ingress.class: nginx
-      cert-manager.io/cluster-issuer: letsencrypt-prod
+    annotations: {}
 
     ## Hostnames.
     ## Either `hosts` or `rulesOverride` must be provided if Ingress is enabled.
     ## `hosts` sets up the Ingress with default rules per provided hostname.
-    hosts: 
-    - concourse.balloray.com
+    hosts:
 
     ## Ingress class name
     ## Should match the name of the IngressClass. If left unset, will select the default IngressClass.
@@ -2356,9 +2353,6 @@ web:
     ##       - concourse.domain.com
     ##
     tls:
-       - secretName: concourse-web-tls
-         hosts:
-           - concourse.balloray.com
 
 ## Configuration values for Concourse Worker components.
 ## For more information regarding the characteristics of
@@ -2387,7 +2381,7 @@ worker:
 
   ## Number of replicas.
   ##
-  replicas: 5
+  replicas: 2
 
   ## Array of extra containers to run alongside the Concourse worker
   ## container.
@@ -2651,16 +2645,16 @@ postgresql:
   auth:
     ### PostgreSQL User to create.
     ##
-    username: concourse-postgresql
+    username: concourse
 
     ## PostgreSQL Password for the new user.
     ## If not set, a random 10 characters password will be used.
     ##
-    password: concourse-postgresql
+    password: concourse
 
     ## PostgreSQL Database to create.
     ##
-    database: concourse-postgresql
+    database: concourse
 
   ## Allows for setting a specific cluster ip for the PostgreSQL
   ## service.
@@ -2789,7 +2783,7 @@ secrets:
   ## List of `username:password` or `username:bcrypted_password` combinations for all your local concourse users.
   ## For details of expected format, see https://concourse-ci.org/local-auth.html
   ##
-  localUsers: "balloray:test"
+  localUsers: "test:test"
 
   ## The TLS certificate and private key for the web component to be able to terminate
   ## TLS connections.
@@ -2919,8 +2913,8 @@ secrets:
 
   ## Secrets for web interface login
   ##
-  clientId: 
-  clientSecret: 
+  clientId:
+  clientSecret:
 
   ## Secrets for tsa login
   ##
