@@ -1,4 +1,11 @@
 ---
+# resources:
+#   - name: pcf-pushtool
+#     type: docker-image
+#     source:
+#       repository: balloray/pcf-pushtool
+#       tag: latest
+
 jobs:
 - name: job
   public: true
@@ -12,3 +19,57 @@ jobs:
       run:
         path: echo
         args: ["Hello world!"]
+
+# Try to trigger the job multiple times and see what happens
+- name: serial-job
+  public: true
+  serial: true
+  plan:
+  - task: simple-task
+    config:
+      platform: linux
+      image_resource:
+        type: registry-image
+        source: { repository: balloray/pcf-pushtool }
+      run:
+        # path: echo
+        # args: ["Hello, world!"]
+        path: sh
+        args:
+        - "-c"
+        - |
+          # # cf login -a ${CF_API} -u ${CF_USER} -p ${CF_PASS} -o ${CF_ORG} -s ${CF_SPACE}
+          # echo "Hello "
+          gcloud container clusters get-credentials balloray-cluster --region us-central1 --project encoded-ensign-361001
+          kubectl get node
+
+
+- name: testing-job
+  plan: 
+  # - get: sample-apps-repo
+  - task: deployment-task
+    config:
+      platform: linux
+      # inputs:
+      # - name: sample-apps-repo
+      params:
+        # CF_USER: ((cf_user))
+        # CF_PASS: ((cf_pass))
+        # CF_API: ((cf_api))
+        # CF_ORG: ((cf_org))
+        # CF_SPACE: ((cf_space))
+        # APP_NAME: PCF-gpostgres
+        # CF_ENV: cloud-01
+      image_resource:
+        type: docker-image
+        source: 
+          repository: balloray/pcf-pushtool
+          tag: latest
+      run:
+        path: sh
+        args:
+        - "-c"
+        - |
+          # cf login -a ${CF_API} -u ${CF_USER} -p ${CF_PASS} -o ${CF_ORG} -s ${CF_SPACE}
+          echo "Hello "
+
