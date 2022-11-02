@@ -1,0 +1,33 @@
+---
+# resources:
+#   - name: pcf-pushtool
+#     type: docker-image
+#     source:
+#       repository: balloray/pcf-pushtool
+#       tag: latest
+
+jobs:
+- name: my-job
+  plan: 
+  # - get: sample-apps-repo
+  - task: my-task
+    config:
+      platform: linux
+      # inputs:
+      # - name: sample-apps-repo
+      params:
+        CF_USER: cf-user
+      image_resource:
+        type: registry-image
+        source: { repository: balloray/pcf-pushtool, tag: 0.04 }
+      run:
+        path: bash
+        args:
+        - -c
+        - |
+          sudo touch test-file
+          ls -l
+          gcloud version
+          docker version
+          terraform version
+          helm version
