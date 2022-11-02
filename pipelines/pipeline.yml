@@ -16,7 +16,7 @@ jobs:
       # inputs:
       # - name: sample-apps-repo
       params:
-        CF_USER: cf-user
+        CF_USER: ((var))
       image_resource:
         type: registry-image
         source: { repository: balloray/pcf-pushtool, tag: 0.04 }
@@ -25,9 +25,4 @@ jobs:
         args:
         - -c
         - |
-          sudo touch test-file
-          ls -l
-          gcloud version
-          docker version
-          terraform version
-          helm version
+          echo ${CF_USER}
