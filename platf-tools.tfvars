@@ -1,0 +1,5 @@
+google_domain_name       = "balloray.com"
+google_project_id        = "sandbox-366619"
+google_bucket_name       = "sandbox-13-bucket"
+deployment_environment   = "sbx"
+deployment_name          = "platf-tools"
