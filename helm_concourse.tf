@@ -38,5 +38,6 @@ postgresql:
 
 secrets:
   localUsers: ${var.concourse["local_user"]}:${var.concourse["admin_password"]}
+  vaultClientToken: ${var.concourse["vault_token"]}
 EOF
 }

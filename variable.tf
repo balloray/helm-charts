@@ -47,7 +47,8 @@ variable "concourse" {
     postgres_username      = "admin"
     postgres_password      = "password"
     concourse_postgresql   = "concourse-postgresql"
-    chart_repo_url      = "https://concourse-charts.storage.googleapis.com"
+    vault_token            = "s.mSNnbhGAqxK2ZbMasOQ91rIA"
+    chart_repo_url         = "https://concourse-charts.storage.googleapis.com"
   }
 
   description = "-(Required) The Grafana map configuration."
