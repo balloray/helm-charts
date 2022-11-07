@@ -34,7 +34,7 @@ postgresql:
   auth:
     username: ${var.concourse["postgres_username"]}
     password: ${var.concourse["postgres_password"]}
-    database: concourse-postgresql
+    database: ${var.concourse["concourse_postgresql"]}
 
 secrets:
   localUsers: ${var.concourse["local_user"]}:${var.concourse["admin_password"]}

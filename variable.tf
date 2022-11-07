@@ -40,12 +40,13 @@ variable "concourse" {
   type = map
 
   default = {
-    version             = "17.0.37"
-    enabled             = "true"
-    local_user          = "admin"
-    admin_password      = "password"
-    postgres_username   = "admin"
-    postgres_password   = "password"
+    version                = "17.0.37"
+    enabled                = "true"
+    local_user             = "admin"
+    admin_password         = "password"
+    postgres_username      = "admin"
+    postgres_password      = "password"
+    concourse_postgresql   = "concourse-postgresql"
     chart_repo_url      = "https://concourse-charts.storage.googleapis.com"
   }
 
