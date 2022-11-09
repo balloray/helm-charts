@@ -1,6 +1,6 @@
 ## The remote chart deployment 
 resource "helm_release" "helm_deployment" {
-  name                = var.deployment_name
+  name                = var.chart_name
   namespace           = var.deployment_environment
   chart               = var.deployment_path
   timeout             = var.timeout

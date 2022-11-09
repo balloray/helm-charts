@@ -32,7 +32,7 @@ fi
 if [ -z "$CREDENTIALS" ]
 then
     echo "setenv: 'credentials' file not set in configuration file."
-    CREDENTIALS="$HOME/google-credentials.json"
+    CREDENTIALS="$HOME/google.json"
 fi
 if [ -z "$DEPLOYMENT" ]
 then
