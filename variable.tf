@@ -17,7 +17,7 @@ variable "deployment_path" {
 
 variable "release_version" {
   description = "-(Optional) Specify the exact chart version to install"
-  default     = "0.1.0"
+  default     = "17.0.37"
 }
 
 variable "timeout" {
