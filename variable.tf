@@ -1,5 +1,27 @@
-variable "deployment_name" {
+# variable "google_bucket_name" {
+#   description = "-(Required) The name of the deployment"
+# }
+
+# variable "google_domain_name" {
+#   description = "-(Required) The name of the deployment"
+# }
+
+# variable "google_project_id" {
+#   description = "-(Required) The name of the deployment"
+# }
+
+# variable "deployment_name" {
+#   description = "-(Required) The name of the deployment"
+# }
+
+variable "chart_name" {
   description = "-(Required) The name of the deployment"
+  default     = "concourse"
+}
+
+variable "deployment_environment" {
+  description = "-(Required) The name of the environment"
+  default     = "sbx"
 }
 
 variable "deployment_endpoint" {
@@ -7,11 +29,8 @@ variable "deployment_endpoint" {
   default     = "example.local"
 }
 
-variable "deployment_environment" {
-  description = "-(Required) The name of the environment"
-}
-
 variable "deployment_path" {
+  default     = "concourse"
   description = "-(Required) Chart location or chart name <stable/example>"
 }
 
@@ -29,39 +48,41 @@ variable "recreate_pods" {
   default     = false
 }
 
-variable "values" {
-  default     = "values.yaml"
-  description = "-(Optional) Local chart <values.yaml> location"
-}
-
-variable "chart_override_values" {
-  default     = ""
-  description = "-(Optional)"
-}
-
 variable "chart_repo" {
-  default     = ""
+  default     = "https://concourse-charts.storage.googleapis.com"
   description = "-(Optional) Provide the remote helm charts repository."
 }
 
-# variable "remote_chart" {
-#   type        = bool
-#   default     = false
-#   description = "-(Optional) For the remote charts set to <true>"
-# }
-
-# variable "enabled" {
-#   type        = bool
-#   default     = true
-#   description = "-(Optional) deployment can be disabled or enabled by using this bool!"
-# }
-
-# variable "template_custom_vars" {
-#   type        = map
-#   default     = {}
-#   description = "-(Optional) Local chart replace variables from values.yaml"
-# }
-
-# variable "trigger" {
-#   default = "UUID"
-# }
+variable "chart_override_values" {
+  description = "-(Optional)"
+  default     = <<EOF
+concourse:
+  web:
+    clusterName: atandcorp-concourse
+    externalUrl: https://concourse.balloray.com
+    auth:
+      mainTeam:
+        localUser: "admin"
+web:
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts: 
+      - concourse.balloray.com
+    tls:
+      - secretName: concourse-web-tls
+        hosts:
+          - concourse.balloray.com
+worker:
+  replicas: 3
+postgresql:
+  auth:
+    username: concourse-postgresql
+    password: concourse-postgresql
+    database: concourse-postgresql
+secrets:
+  localUsers: "admin:test"
+EOF
+}
