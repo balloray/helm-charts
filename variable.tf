@@ -48,10 +48,10 @@ variable "recreate_pods" {
   default     = false
 }
 
-variable "chart_repo" {
-  default     = "https://concourse-charts.storage.googleapis.com"
-  description = "-(Optional) Provide the remote helm charts repository."
-}
+# variable "chart_repo" {
+#   default     = "https://concourse-charts.storage.googleapis.com"
+#   description = "-(Optional) Provide the remote helm charts repository."
+# }
 
 variable "chart_override_values" {
   description = "-(Optional)"
