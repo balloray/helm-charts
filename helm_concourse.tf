@@ -32,11 +32,11 @@ web:
       kubernetes.io/ingress.class: nginx
       cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts: 
-      - concourse.${var.google_domain_name}
+    - concourse.${var.google_domain_name}
     tls:
-      - secretName: concourse-web-tls
-        hosts:
-          - concourse.${var.google_domain_name}
+    - secretName: concourse-web-tls
+      hosts:
+      - concourse.${var.google_domain_name}
 
 worker:
   replicas: 3
