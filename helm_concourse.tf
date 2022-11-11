@@ -1,13 +1,10 @@
-module "concourse_deploy" {
-  source                 = "fuchicorp/chart/helm"
-  deployment_name        = "concourse"
-  deployment_environment = var.deployment_environment
-  deployment_path        = "concourse"
-  chart_repo             = var.concourse["chart_repo_url"]
-  enabled                = true
-  remote_chart           = true
-  release_version        = var.concourse["version"]
-  remote_override_values = <<EOF
+module "helm" {
+  source                  = "github.com/balloray/helm-chart"
+  chart_name              = "concourse"
+  chart_path              = "concourse"
+  chart_version           = "17.0.37"
+  chart_repo             = "https://concourse-charts.storage.googleapis.com"
+  chart_override_values   = <<EOF
 concourse:
   web:
     externalUrl: https://concourse.${var.google_domain_name}
