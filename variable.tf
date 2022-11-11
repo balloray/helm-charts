@@ -1,32 +1,32 @@
-# variable "google_bucket_name" {
-#   description = "-(Required) The name of the deployment"
-# }
-
-# variable "google_domain_name" {
-#   description = "-(Required) The name of the deployment"
-# }
-
-# variable "google_project_id" {
-#   description = "-(Required) The name of the deployment"
-# }
-
-# variable "deployment_name" {
-#   description = "-(Required) The name of the deployment"
-# }
-
-variable "chart_name" {
+variable "google_bucket_name" {
   description = "-(Required) The name of the deployment"
-  default     = "concourse"
 }
 
-# variable "deployment_environment" {
-#   description = "-(Required) The name of the environment"
-#   default     = "sbx"
-# }
+variable "google_domain_name" {
+  description = "-(Required) The name of the deployment"
+}
+
+variable "google_project_id" {
+  description = "-(Required) The name of the deployment"
+}
+
+variable "deployment_name" {
+  description = "-(Required) The name of the deployment"
+}
+
+variable "deployment_environment" {
+  description = "-(Required) The name of the environment"
+  default     = "sbx"
+}
 
 variable "deployment_endpoint" {
   description = "-(Optional) Endpoint for the application"
   default     = "example.local"
+}
+
+variable "chart_name" {
+  description = "-(Required) The name of the deployment"
+  default     = "concourse"
 }
 
 variable "deployment_path" {
@@ -58,4 +58,19 @@ variable "chart_override_values" {
   default     = <<EOF
 google
 EOF
+}
+
+variable "concourse" {
+  type = map
+
+  default = {
+    vault_token            = "admin"
+    local_user             = "admin"
+    admin_password         = "password"
+    postgres_username      = "admin"
+    postgres_password      = "password"
+    concourse_postgresql   = "concourse-postgresql"
+  }
+
+  description = "-(Optional) The WikiJs map configuration."
 }

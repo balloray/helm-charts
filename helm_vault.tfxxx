@@ -1,23 +1,11 @@
-# FuchiCorp Vault Deployment
-module "vault_deploy" {
-  source                 = "fuchicorp/chart/helm"
-  version                = "0.0.12"
-  deployment_name        = "vault"
-  deployment_environment = "tools"
-  deployment_endpoint    = "vault.${var.google_domain_name}"
-  enabled                = var.vault["enabled"]
-  remote_chart           = "true"
-  ## Making sure the deployment waits for common tools namespace!
-  template_custom_vars = {
-    namespace_depends_on = kubernetes_namespace.tools.id 
-  }
-  deployment_path        = "vault"
-  release_version        = var.vault["version"]
-  chart_repo             = var.vault["chart_repo_url"]
-
-  ## The Vault values configurations
-  remote_override_values = <<EOF
-injector:
+module "vault_chart" {
+  source                  = "github.com/balloray/helm-chart/module"
+  chart_name              = "vault"
+  chart_path              = "vault"
+  chart_version           = "0.19.0"
+  chart_repo              = "https://helm.releases.hashicorp.com"
+  chart_override_values   = <<EOF
+  injector:
   enabled: false
 
 server:
