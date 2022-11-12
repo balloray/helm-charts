@@ -9,8 +9,8 @@ if [ ! -f "$DATAFILE" ]; then
   echo "setenv: Configuration file not found: $DATAFILE"
   return 1
 fi
-BUCKET=$(sed -nr 's/^google_bucket_name\s*=\s*"([^"]*)".*$/\1/p'             "$DATAFILE")
-PROJECT=$(sed -nr 's/^google_project_id\s*=\s*"([^"]*)".*$/\1/p'             "$DATAFILE")
+BUCKET=$(sed -nr 's/^gcp_bucket_name\s*=\s*"([^"]*)".*$/\1/p'             "$DATAFILE")
+PROJECT=$(sed -nr 's/^gcp_project_id\s*=\s*"([^"]*)".*$/\1/p'             "$DATAFILE")
 ENVIRONMENT=$(sed -nr 's/^deploy_env\s*=\s*"([^"]*)".*$/\1/p'    "$DATAFILE")
 DEPLOYMENT=$(sed -nr 's/^deployment_name\s*=\s*"([^"]*)".*$/\1/p'            "$DATAFILE")
 CREDENTIALS=$(sed -nr 's/^credentials\s*=\s*"([^"]*)".*$/\1/p'               "$DATAFILE") 

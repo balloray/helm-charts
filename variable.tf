@@ -1,4 +1,4 @@
-variable "google_bucket_name" {
+variable "gcp_bucket_name" {
   description = "-(Required) The name of the deployment"
 }
 
@@ -6,7 +6,7 @@ variable "google_domain_name" {
   description = "-(Required) The name of the deployment"
 }
 
-variable "google_project_id" {
+variable "gcp_project_id" {
   description = "-(Required) The name of the deployment"
 }
 
