@@ -7,7 +7,7 @@ module "vault_chart" {
   chart_override_values   = <<EOF
 injector:
   enabled: false
-  # externalVaultAddr: "vault.${var.google_domain_name}"
+  # externalVaultAddr: "vault.${var.gcp_domain_name}"
 server:
   ingress:
     enabled: true
@@ -16,13 +16,13 @@ server:
       kubernetes.io/ingress.class: nginx
       cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
-      - host: "vault.${var.google_domain_name}"
+      - host: "vault.${var.gcp_domain_name}"
         paths:
         - /
     tls:
     - secretName: chart-vault-tls
       hosts:
-      - "vault.${var.google_domain_name}"
+      - "vault.${var.gcp_domain_name}"
   readinessProbe:
     enabled: false
   dataStorage:
