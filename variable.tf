@@ -14,9 +14,9 @@ variable "deployment_name" {
   description = "-(Required) The name of the deployment"
 }
 
-variable "deployment_environment" {
+variable "deploy_env" {
   description = "-(Required) The name of the environment"
-  default     = "sbx"
+  default     = "default"
 }
 
 variable "deployment_endpoint" {

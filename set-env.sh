@@ -11,12 +11,12 @@ if [ ! -f "$DATAFILE" ]; then
 fi
 BUCKET=$(sed -nr 's/^google_bucket_name\s*=\s*"([^"]*)".*$/\1/p'             "$DATAFILE")
 PROJECT=$(sed -nr 's/^google_project_id\s*=\s*"([^"]*)".*$/\1/p'             "$DATAFILE")
-ENVIRONMENT=$(sed -nr 's/^deployment_environment\s*=\s*"([^"]*)".*$/\1/p'    "$DATAFILE")
+ENVIRONMENT=$(sed -nr 's/^deploy_env\s*=\s*"([^"]*)".*$/\1/p'    "$DATAFILE")
 DEPLOYMENT=$(sed -nr 's/^deployment_name\s*=\s*"([^"]*)".*$/\1/p'            "$DATAFILE")
 CREDENTIALS=$(sed -nr 's/^credentials\s*=\s*"([^"]*)".*$/\1/p'               "$DATAFILE") 
 if [ -z "$ENVIRONMENT" ]
 then
-    echo "setenv: 'deployment_environment' variable not set in configuration file."
+    echo "setenv: 'deploy_env' variable not set in configuration file."
     return 1
 fi
 if [ -z "$BUCKET" ]
