@@ -1,10 +1,10 @@
 #!/bin/sh
 ## Use following container vault:1.4.0
 ## Make sure folder name is not ending with /
-# apk add --no-cache curl
-# curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-# chmod +x kubectl && mv kubectl /bin/
-export VAULT_ENDPOINT="https://vault.balloray.com"
+apk add --no-cache curl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl && mv kubectl /bin/
+VAULT_ENDPOINT="http://vault-tools-internal:8200"
 
 ## Wait until the vault server is up and running  
 while [ $(curl -X GET -s -o /dev/null -w "%{http_code}"  "$VAULT_ENDPOINT" -L ) != 200 ]

@@ -30,3 +30,17 @@ resource "null_resource" "cert_manager_cluster_issuer" {
 EOF
   }
 }
+
+
+## Creating the secret to access GCP 
+resource "kubernetes_secret" "google_service_account" {
+  metadata {
+    name      = "google-service-account"
+  }
+
+  data = {
+    "credentials.json" = file(pathexpand("~/google-credentials.json"))
+  }
+
+  type = "generic"
+}
