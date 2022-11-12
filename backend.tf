@@ -1,6 +1,6 @@
 terraform {
   backend "gcs" {
-    bucket  = "sandbox-13-bucket"
-    prefix  = "sbx/platf-tools"
+    bucket  = "balloray14-bucket"
+    prefix  = "default/platf-tools"
   }
 }

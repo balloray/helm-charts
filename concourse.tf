@@ -39,7 +39,7 @@ web:
       - concourse.${var.google_domain_name}
 
 worker:
-  replicas: 3
+  replicas: 2
 
 postgresql:
   auth:

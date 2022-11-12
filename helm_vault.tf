@@ -5,9 +5,9 @@ module "vault_chart" {
   chart_version           = "0.19.0"
   chart_repo              = "https://helm.releases.hashicorp.com"
   chart_override_values   = <<EOF
-  injector:
+injector:
   enabled: false
-
+  # externalVaultAddr: "vault.${var.google_domain_name}"
 server:
   ingress:
     enabled: true
@@ -15,9 +15,6 @@ server:
     annotations: 
       kubernetes.io/ingress.class: nginx
       cert-manager.io/cluster-issuer: letsencrypt-prod
-      nginx.ingress.kubernetes.io/whitelist-source-range: ${join(",", var.common_tools_access)}
-      nginx.ingress.kubernetes.io/server-snippet: |
-        error_page 403 ${var.custom_403_endpoint};
     hosts:
       - host: "vault.${var.google_domain_name}"
         paths:
@@ -35,33 +32,27 @@ EOF
 
 ## Creating the vault-init-cm configmap for vault-init-job to unseal the vault server after deployment
 resource "kubernetes_config_map" "init_script_config_map" {
-  count = var.vault["enabled"] == "true" ? 1 : 0
   metadata {
     name      = "vault-init-cm"
-    namespace = "tools"
   }
-
   data = {
     "init.sh" = file("${path.module}/terraform_templates/vault/init.sh")
   }
-
   depends_on = [
-    module.vault_deploy,
+    module.vault_chart,
   ]
 }
 
 ## Creating the vault-init-cron-job to unseal the vault server after deployment
 resource "kubernetes_cron_job" "vault_init_cron_job" {
-  count = var.vault["enabled"] == "true" ? 1 : 0
   metadata {
     name      = "vault-init-cron-job"
-    namespace = "tools"
   }
 
   spec {
     concurrency_policy        = "Replace"
     failed_jobs_history_limit = 1
-    schedule                  = var.vault["cronjob"]
+    schedule                  = "*/3 * * * *"
 
     job_template {
       metadata {}
@@ -100,4 +91,20 @@ resource "kubernetes_cron_job" "vault_init_cron_job" {
   depends_on = [
     kubernetes_config_map.init_script_config_map,
   ]
+}
+
+resource "kubernetes_service_account" "common_service_account" {
+  metadata {
+    name      = "common-service-account"
+  }
+  secret {
+    name = kubernetes_secret.common_service_account_secret.metadata.0.name
+  }
+  automount_service_account_token = true
+}
+
+resource "kubernetes_secret" "common_service_account_secret" {
+  metadata {
+    name      = "common-service-account-secret"
+  }
 }
