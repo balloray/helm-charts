@@ -24,3 +24,12 @@ resource "kubernetes_secret" "google_service_account" {
   }
   type = "generic"
 }
+
+# resource "kubernetes_namespace" "tools" {
+#   metadata {
+#     name = var.deploy_env
+#     labels = {
+#       "managed-by" = "team"
+#     }
+#   }
+# }
