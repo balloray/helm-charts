@@ -5,6 +5,9 @@ module "concourse_chart" {
   chart_version           = "17.0.37"
   chart_repo              = "https://concourse-charts.storage.googleapis.com"
   chart_override_values   = <<EOF
+# image: tanzutap/concourse
+# imageTag: 6.7-ubuntu
+# # imagePullSecrets: ["regcred"] # Remove if registry is public
 concourse:
   web:
     externalUrl: https://concourse.${var.gcp_domain_name}
@@ -42,6 +45,11 @@ worker:
   replicas: 2
 
 postgresql:
+  # image:
+  #   registry: docker.io
+  #   repository: tanzutap/postgres
+  #   tag: latest
+  #   ##pullSecrets: ["regcred"] # Remove if registry is public
   auth:
     username: ${var.concourse["postgres_username"]}
     password: ${var.concourse["postgres_password"]}
