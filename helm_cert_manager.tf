@@ -9,16 +9,6 @@ installCRDs: true
 EOF
 }
 
-# data "template_file" "cert_manager_cluster_issuer" {
-#   template = file("tf-templates/cert-manager/issuer.yaml")
-
-#   # vars = {
-#   #   google_project_id   = var.google_project_id
-#   #   clusterissuer_email = var.email
-#   # }
-# }
-
-
 ## Creating the cluster issuer for cert manager
 resource "null_resource" "cert_manager_cluster_issuer" {
   depends_on = [module.cert_manager_chart]
@@ -32,15 +22,3 @@ EOF
 }
 
 
-## Creating the secret to access GCP 
-resource "kubernetes_secret" "google_service_account" {
-  metadata {
-    name      = "google-service-account"
-  }
-
-  data = {
-    "credentials.json" = file(pathexpand("~/google-credentials.json"))
-  }
-
-  type = "generic"
-}

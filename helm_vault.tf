@@ -93,18 +93,3 @@ resource "kubernetes_cron_job" "vault_init_cron_job" {
   ]
 }
 
-resource "kubernetes_service_account" "common_service_account" {
-  metadata {
-    name      = "common-service-account"
-  }
-  secret {
-    name = kubernetes_secret.common_service_account_secret.metadata.0.name
-  }
-  automount_service_account_token = true
-}
-
-resource "kubernetes_secret" "common_service_account_secret" {
-  metadata {
-    name      = "common-service-account-secret"
-  }
-}
