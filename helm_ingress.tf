@@ -1,6 +1,6 @@
 module "nginx_chart" {
   source                  = "github.com/balloray/helm-chart/module"
-  chart_name              = "ngress-controller"
+  chart_name              = "ingress-controller"
   chart_path              = "ingress-nginx"
   chart_version           = "4.0.19"
   chart_repo             = "https://kubernetes.github.io/ingress-nginx"
