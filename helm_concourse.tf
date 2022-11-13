@@ -19,16 +19,25 @@ concourse:
       useAuthParam: true
     auth:
       mainTeam:
-        localUser: ${var.concourse["local_user"]}
+        localUser: ${var.concourse["local_user"]},
+        github:
+          user: ${var.concourse["user1"]}
 web:
   env:
   - name: CONCOURSE_VAULT_URL
     value: "https://vault.${var.gcp_domain_name}"
   - name: CONCOURSE_VAULT_CLIENT_TOKEN
-    valueFrom:
-      secretKeyRef:
-        name: concourse-web
-        key: vault-client-token
+    value: ${var.concourse["vault_token"]}
+  - name: CONCOURSE_GITHUB_CLIENT_ID
+    value: ${var.concourse["github_clien_id"]}
+  - name: CONCOURSE_GITHUB_CLIENT_SECRET
+    value: ${var.concourse["github_client_secret"]}
+  # - name: CONCOURSE_ADD_LOCAL_USER
+  #   value: ${var.concourse["admin_password"]}
+  #     # secretKeyRef:
+  #     #   name: concourse-web
+  #     #   key: local-users
+
   ingress:
     enabled: true
     annotations: 
@@ -57,6 +66,5 @@ postgresql:
 
 secrets:
   localUsers: ${var.concourse["local_user"]}:${var.concourse["admin_password"]}
-  vaultClientToken: ${var.concourse["vault_token"]}
 EOF
 }
