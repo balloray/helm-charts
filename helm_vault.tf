@@ -16,9 +16,9 @@ server:
       kubernetes.io/ingress.class: nginx
       cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
-      - host: "vault.${var.gcp_domain_name}"
-        paths:
-        - /
+    - host: "vault.${var.gcp_domain_name}"
+      paths:
+      - /
     tls:
     - secretName: chart-vault-tls
       hosts:
