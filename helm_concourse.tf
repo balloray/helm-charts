@@ -63,19 +63,6 @@ postgresql:
 
 secrets:
   localUsers: ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
-  # # initScripts: 
-  # #  - |
-  # #    ${indent(5, data.template_file.jenkins_init_scripts.rendered)}
-  # hostKey: |-
-  #   -----BEGIN RSA PRIVATE KEY-----
-  # hostKeyPub: |-
-  #   ssh-rsa AAAAB3NzaC1y
-  # sessionSigningKey: |-
-  #   -----BEGIN RSA PRIVATE KEY-----
-  # workerKey: |-
-  #   -----BEGIN RSA PRIVATE KEY-----
-  # workerKeyPub: |-
-  #   ssh-rsa A
 
 rbac:
   create: true
