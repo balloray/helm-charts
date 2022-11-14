@@ -25,6 +25,17 @@ resource "kubernetes_secret" "google_service_account" {
   type = "generic"
 }
 
+# resource "kubernetes_secret" "concourse_web_secret {
+#   metadata {
+#     name = "concourse-web-sec"
+#   }
+
+#   data = {
+#     "host-key" = hostkey.key
+#   }
+#   # type = "generic"
+# }
+
 # resource "kubernetes_namespace" "tools" {
 #   metadata {
 #     name = var.deploy_env

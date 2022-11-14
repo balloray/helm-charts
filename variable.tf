@@ -30,7 +30,6 @@ variable "recreate_pods" {
 
 variable "concourse" {
   type = map
-
   default = {
     vault_token            = "admin"
     local_users            = "admin"
@@ -45,8 +44,3 @@ variable "concourse" {
 
   description = "-(Optional) The WikiJs map configuration."
 }
-
-# variable "recreate_pods" {
-#   type        = bool
-#   default     = false
-# }
