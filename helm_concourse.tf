@@ -63,5 +63,10 @@ postgresql:
 
 secrets:
   localUsers: ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
+
+rbac:
+  create: true
+  webServiceAccountName: concourse
+  workerServiceAccountName: concourse-worker
 EOF
 }
