@@ -45,3 +45,8 @@ variable "concourse" {
 
   description = "-(Optional) The WikiJs map configuration."
 }
+
+# variable "recreate_pods" {
+#   type        = bool
+#   default     = false
+# }
