@@ -33,12 +33,6 @@ web:
     value: ${var.concourse["github_clien_id"]}
   - name: CONCOURSE_GITHUB_CLIENT_SECRET
     value: ${var.concourse["github_client_secret"]}
-  # - name: CONCOURSE_ADD_LOCAL_USER
-  #   value: ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
-  #   # value:
-  #   #   secretKeyRef:
-  #   #     name: concourse-web
-  #   #     key: local-users
 
   ingress:
     enabled: true
