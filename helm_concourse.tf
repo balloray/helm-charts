@@ -21,7 +21,7 @@ concourse:
       mainTeam:
         localUser: ${var.concourse["local_user"]},
         github:
-          user: ${var.concourse["user1"]}
+          user: ${var.concourse["users"]}
 web:
   env:
   - name: CONCOURSE_VAULT_URL
@@ -33,10 +33,11 @@ web:
   - name: CONCOURSE_GITHUB_CLIENT_SECRET
     value: ${var.concourse["github_client_secret"]}
   # - name: CONCOURSE_ADD_LOCAL_USER
-  #   value: ${var.concourse["admin_password"]}
-  #     # secretKeyRef:
-  #     #   name: concourse-web
-  #     #   key: local-users
+  #   value: ${var.concourse["local_user"]}:${var.concourse["admin_password"]}
+  #   # value:
+  #   #   secretKeyRef:
+  #   #     name: concourse-web
+  #   #     key: local-users
 
   ingress:
     enabled: true

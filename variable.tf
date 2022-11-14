@@ -35,7 +35,7 @@ variable "concourse" {
     vault_token            = "admin"
     local_user             = "admin"
     admin_password         = "password"
-    user1                  = "balloray"
+    users                  = "balloray"
     postgres_username      = "admin"
     postgres_password      = "password"
     concourse_postgresql   = "concourse-postgresql"
