@@ -20,7 +20,7 @@ server:
       paths:
       - /
     tls:
-    - secretName: vault-tls-secret
+    - secretName: vault-tls
       hosts:
       - "vault.${var.gcp_domain_name}"
   readinessProbe:
