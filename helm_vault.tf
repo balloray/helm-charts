@@ -20,7 +20,7 @@ server:
       paths:
       - /
     tls:
-    - secretName: chart-vault-tls
+    - secretName: vault-tls-secret
       hosts:
       - "vault.${var.gcp_domain_name}"
   readinessProbe:
