@@ -33,7 +33,7 @@ variable "concourse" {
 
   default = {
     vault_token            = "admin"
-    local_user             = "admin"
+    local_users            = "admin"
     admin_password         = "password"
     users                  = "balloray"
     postgres_username      = "admin"

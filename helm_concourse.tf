@@ -5,9 +5,6 @@ module "concourse_chart" {
   chart_version           = "17.0.37"
   chart_repo              = "https://concourse-charts.storage.googleapis.com"
   chart_override_values   = <<EOF
-# image: tanzutap/concourse
-# imageTag: 6.7-ubuntu
-# # imagePullSecrets: ["regcred"] # Remove if registry is public
 concourse:
   web:
     externalUrl: https://concourse.${var.gcp_domain_name}
@@ -19,9 +16,13 @@ concourse:
       useAuthParam: true
     auth:
       mainTeam:
-        localUser: ${var.concourse["local_user"]},
+        localUser: ${var.concourse["local_users"]}
         github:
           user: ${var.concourse["users"]}
+      # ascTeam:
+      #   localUser: ${var.concourse["local_users"]}
+      #   github:
+      #     user: ${var.concourse["users"]}
 web:
   env:
   - name: CONCOURSE_VAULT_URL
@@ -33,7 +34,7 @@ web:
   - name: CONCOURSE_GITHUB_CLIENT_SECRET
     value: ${var.concourse["github_client_secret"]}
   # - name: CONCOURSE_ADD_LOCAL_USER
-  #   value: ${var.concourse["local_user"]}:${var.concourse["admin_password"]}
+  #   value: ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
   #   # value:
   #   #   secretKeyRef:
   #   #     name: concourse-web
@@ -47,7 +48,7 @@ web:
     hosts: 
     - concourse.${var.gcp_domain_name}
     tls:
-    - secretName: concourse-tls-secret
+    - secretName: concourse-web-tls
       hosts:
       - concourse.${var.gcp_domain_name}
 
@@ -55,17 +56,12 @@ worker:
   replicas: 2
 
 postgresql:
-  # image:
-  #   registry: docker.io
-  #   repository: tanzutap/postgres
-  #   tag: latest
-  #   ##pullSecrets: ["regcred"] # Remove if registry is public
   auth:
     username: ${var.concourse["postgres_username"]}
     password: ${var.concourse["postgres_password"]}
     database: ${var.concourse["concourse_postgresql"]}
 
 secrets:
-  localUsers: ${var.concourse["local_user"]}:${var.concourse["admin_password"]}
+  localUsers: ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
 EOF
 }
