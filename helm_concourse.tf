@@ -42,7 +42,7 @@ web:
     hosts: 
     - concourse.${var.gcp_domain_name}
     tls:
-    - secretName: concourse-web-tls
+    - secretName: concourse-tls
       hosts:
       - concourse.${var.gcp_domain_name}
 
