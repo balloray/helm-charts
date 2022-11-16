@@ -54,15 +54,15 @@ postgresql:
 secrets:
   localUsers:   ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
   hostKey: |-
-    file(pathexpand("~/helm-charts/host-key"))
+    file(pathexpand("~/helm-charts/host-key.key"))
   hostKeyPub: |-
-    file(pathexpand("~/helm-charts/host-key.pub"))       
+    file(pathexpand("~/helm-charts/host-key.pub.key"))       
   workerKey: |-
-    file(pathexpand("~/helm-charts/worker-key"))         
+    file(pathexpand("~/helm-charts/worker-key.key"))         
   worker_key_pub: |-
-    file(pathexpand("~/helm-charts/worker-key'pub")) 
+    file(pathexpand("~/helm-charts/worker-key'pub.key")) 
   sessions_signing_key: |-
-    file(pathexpand("~/helm-charts/session-signing-key"))
+    file(pathexpand("~/helm-charts/session-signing-key.key"))
 
 rbac:
   create: true
