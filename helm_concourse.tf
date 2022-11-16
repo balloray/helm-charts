@@ -54,7 +54,7 @@ postgresql:
 secrets:
   localUsers:   ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
   hostKey: |-
-    file(pathexpand("~/helm-charts/hos-key"))
+    file(pathexpand("~/helm-charts/host-key"))
   hostKeyPub: |-
     file(pathexpand("~/helm-charts/host-key.pub"))       
   workerKey: |-
