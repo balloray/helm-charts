@@ -34,12 +34,17 @@ variable "concourse" {
     vault_token            = "admin"
     local_users            = "admin"
     admin_password         = "password"
-    users                  = "balloray"
+    github_users           = "balloray"
     postgres_username      = "admin"
     postgres_password      = "password"
     concourse_postgresql   = "concourse-postgresql"
     github_clien_id        = "github_clien_id"
     github_client_secret   = "github_client_secret"
+    # host_key               = ""
+    # host_key_pub           = ""
+    # worker_key             = ""
+    # worker_key_pub         = ""
+    # sessions_signing_key   = ""
   }
 
   description = "-(Optional) The WikiJs map configuration."
