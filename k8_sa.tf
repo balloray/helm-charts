@@ -20,7 +20,7 @@ resource "kubernetes_secret" "google_service_account" {
     name      = "google-service-account"
   }
   data = {
-    "credentials.json" = file(pathexpand("~/google-credentials.json"))
+    "credentials.json" = file(pathexpand("~/google.json"))
   }
   type = "generic"
 }
