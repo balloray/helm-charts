@@ -25,10 +25,6 @@ web:
     value: "https://vault.${var.gcp_domain_name}"
   - name: CONCOURSE_VAULT_CLIENT_TOKEN
     value: ${var.concourse["vault_token"]}
-  - name: CONCOURSE_GITHUB_CLIENT_ID
-    value: ${var.concourse["github_clien_id"]}
-  - name: CONCOURSE_GITHUB_CLIENT_SECRET
-    value: ${var.concourse["github_client_secret"]}
 
   ingress:
     enabled: true
@@ -51,15 +47,34 @@ postgresql:
     password: ${var.concourse["postgres_password"]}
     database: ${var.concourse["concourse_postgresql"]}
 
-secrets:
-  localUsers:   ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
+secrets: 
+  create: false
 
 rbac:
   create: true
   webServiceAccountName: concourse
   workerServiceAccountName: concourse-worker
 EOF
+  depends_on = [
+    null_resource.concourse_secrets,
+  ]
 }
+
+# Creating the secret for cert concourse
+resource "null_resource" "concourse_secrets" {
+  provisioner "local-exec" {
+    command = <<EOF
+    #!/bin/bash
+    kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_users"]}:${var.concourse["admin_password"]} --from-literal=vault-client-auth-param="" --from-file=host-key=host-key.key --from-file=worker-key-pub=worker-key.pub.key --from-file=session-signing-key=session-signing-key.key
+    kubectl create secret generic concourse-worker --from-file=host-key-pub=host-key.pub.key --from-file=worker-key=worker-key.key
+EOF
+  }
+}
+
+  # - name: CONCOURSE_GITHUB_CLIENT_ID
+  #   value: ${var.concourse["github_clien_id"]}
+  # - name: CONCOURSE_GITHUB_CLIENT_SECRET
+  #   value: ${var.concourse["github_client_secret"]}
 
 # resource "kubernetes_secret" "concourse_tls_secret" {
 #   metadata {
@@ -71,6 +86,10 @@ EOF
 #   }
 #   type = "kubernetes.io/tls"
 # }
+
+# secrets:
+#   localUsers:   ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
+
 
 # resource "kubernetes_secret" "concourse_host_secret" {
 #   metadata {
@@ -96,9 +115,3 @@ EOF
 #   }
 #   type = "Opague"
 # }
-
-  # hostKey:              ${var.concourse["host_key"]}
-  # hostKeyPub:           ${var.concourse["host_key_pub"]}        
-  # workerKey:            ${var.concourse["worker_key"]}          
-  # worker_key_pub:       ${var.concourse["worker_key_pub"]}  
-  # sessions_signing_key: ${var.concourse["sessions_signing_key"]}
