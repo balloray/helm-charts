@@ -15,7 +15,7 @@ resource "kubernetes_secret" "common_service_account_secret" {
 }
 
 ## Creating the secret to access GCP 
-resource "kubernetes_secret" "google_service_account" {
+resource "kubernetes_secret" "gcp_service_account" {
   metadata {
     name      = "google-service-account"
   }
