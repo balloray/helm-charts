@@ -25,6 +25,10 @@ web:
     value: "https://vault.${var.gcp_domain_name}"
   - name: CONCOURSE_VAULT_CLIENT_TOKEN
     value: ${var.concourse["vault_token"]}
+  - name: CONCOURSE_GITHUB_CLIENT_ID
+    value: ${var.concourse["github_clien_id"]}
+  - name: CONCOURSE_GITHUB_CLIENT_SECRET
+    value: ${var.concourse["github_client_secret"]}
 
   ingress:
     enabled: true
@@ -70,11 +74,6 @@ resource "null_resource" "concourse_secrets" {
 EOF
   }
 }
-
-  # - name: CONCOURSE_GITHUB_CLIENT_ID
-  #   value: ${var.concourse["github_clien_id"]}
-  # - name: CONCOURSE_GITHUB_CLIENT_SECRET
-  #   value: ${var.concourse["github_client_secret"]}
 
 # resource "kubernetes_secret" "concourse_tls_secret" {
 #   metadata {
