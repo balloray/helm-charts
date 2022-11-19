@@ -95,10 +95,10 @@ EOF
 #     name      = "concourse-web"
 #   }
 #   data = {
-#     # "local-users"         = var.concourse["local_users"]:var.concourse["admin_password"]
-#     "host-key"            = file(pathexpand("~/helm-charts/hostkey.key"))
-#     "session-signing-key" = file(pathexpand("~/helm-charts/signinkey.key"))
-#     "worker-key-pub"      = file(pathexpand("~/helm-charts/workerkey-pub.key"))
+#     "local-users"         = var.concourse["local_users"]:var.concourse["admin_password"]
+#     "host-key"            = file(pathexpand("~/helm-charts/host-key.key"))
+#     "session-signing-key" = file(pathexpand("~/helm-charts/session-signing-key.key"))
+#     "worker-key-pub"      = file(pathexpand("~/helm-charts/worker-key-pub.key"))
 
 #   }
 #   type = "Opague"
@@ -109,8 +109,8 @@ EOF
 #     name      = "concourse-worker"
 #   }
 #   data = {
-#     "worker-key"              = file(pathexpand("~/helm-charts/workerkey.key"))
-#     "host-key-pub"            = file(pathexpand("~/helm-charts/hostkey-pub.key"))
+#     "worker-key"              = file(pathexpand("~/helm-charts/worker-key.key"))
+#     "host-key-pub"            = file(pathexpand("~/helm-charts/host-key-pub.key"))
 #   }
 #   type = "Opague"
 # }
