@@ -64,8 +64,8 @@ resource "null_resource" "concourse_secrets" {
   provisioner "local-exec" {
     command = <<EOF
     #!/bin/bash
-    kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_users"]}:${var.concourse["admin_password"]} --from-literal=vault-client-auth-param="" --from-file=host-key=host-key.key --from-file=worker-key-pub=worker-key.pub.key --from-file=session-signing-key=session-signing-key.key
-    kubectl create secret generic concourse-worker --from-file=host-key-pub=host-key.pub.key --from-file=worker-key=worker-key.key
+    kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_users"]}:${var.concourse["admin_password"]} --from-literal=vault-client-auth-param="" --from-file=host-key=sec_host-key.key --from-file=worker-key-pub=sec_worker-key.pub.key --from-file=session-signing-key=sec_session-signing-key.key
+    kubectl create secret generic concourse-worker --from-file=host-key-pub=sec_host-key.pub.key --from-file=worker-key=sec_worker-key.key
 EOF
   }
 }
