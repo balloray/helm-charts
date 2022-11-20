@@ -17,14 +17,12 @@ concourse:
     auth:
       mainTeam:
         localUser: ${var.concourse["local_users"]}
-
 web:
   env:
   - name: CONCOURSE_VAULT_URL
     value: "https://vault.${var.gcp_domain_name}"
   - name: CONCOURSE_VAULT_CLIENT_TOKEN
     value: ${var.concourse["vault_token"]}
-
 
   ingress:
     enabled: true
