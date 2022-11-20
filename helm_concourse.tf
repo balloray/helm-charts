@@ -73,8 +73,8 @@ resource "kubernetes_secret" "concourse_tls_secret" {
     name      = "concourse-tls-secret"
   }
   data = {
-    "tls.key"            = file(pathexpand("~/helm-charts/sec_concourse.key"))
-    "tls.crt"            = file(pathexpand("~/helm-charts/sec_concourse.crt"))
+    "tls.key"            = file(pathexpand("~/helm-charts/sec_concourse_tls.key"))
+    "tls.crt"            = file(pathexpand("~/helm-charts/sec_concourse_tls.crt"))
   }
   type = "kubernetes.io/tls"
 }

@@ -97,8 +97,8 @@ resource "kubernetes_secret" "vault_tls_secret" {
     name      = "vault-tls-secret"
   }
   data = {
-    "tls.key"            = file(pathexpand("~/helm-charts/sec_vault.key"))
-    "tls.crt"            = file(pathexpand("~/helm-charts/sec_vault.crt"))
+    "tls.key"            = file(pathexpand("~/helm-charts/sec_vault_tls.key"))
+    "tls.crt"            = file(pathexpand("~/helm-charts/sec_vault_tls.crt"))
   }
   type = "kubernetes.io/tls"
 }
