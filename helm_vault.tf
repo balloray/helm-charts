@@ -14,13 +14,12 @@ server:
     labels: {}
     annotations: 
       kubernetes.io/ingress.class: nginx
-      cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
     - host: "vault.${var.gcp_domain_name}"
       paths:
       - /
     tls:
-    - secretName: vault-tls
+    - secretName: vault-tls-secret
       hosts:
       - "vault.${var.gcp_domain_name}"
   readinessProbe:
@@ -91,5 +90,16 @@ resource "kubernetes_cron_job" "vault_init_cron_job" {
   depends_on = [
     kubernetes_config_map.init_script_config_map,
   ]
+}
+
+resource "kubernetes_secret" "vault_tls_secret" {
+  metadata {
+    name      = "vault-tls-secret"
+  }
+  data = {
+    "tls.key"            = file(pathexpand("~/helm-charts/sec_vault.key"))
+    "tls.crt"            = file(pathexpand("~/helm-charts/sec_vault.crt"))
+  }
+  type = "kubernetes.io/tls"
 }
 

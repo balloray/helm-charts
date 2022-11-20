@@ -17,28 +17,23 @@ concourse:
     auth:
       mainTeam:
         localUser: ${var.concourse["local_users"]}
-        github:
-          user: ${var.concourse["github_users"]}
+
 web:
   env:
   - name: CONCOURSE_VAULT_URL
     value: "https://vault.${var.gcp_domain_name}"
   - name: CONCOURSE_VAULT_CLIENT_TOKEN
     value: ${var.concourse["vault_token"]}
-  - name: CONCOURSE_GITHUB_CLIENT_ID
-    value: ${var.concourse["github_clien_id"]}
-  - name: CONCOURSE_GITHUB_CLIENT_SECRET
-    value: ${var.concourse["github_client_secret"]}
+
 
   ingress:
     enabled: true
     annotations: 
       kubernetes.io/ingress.class: nginx
-      cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts: 
     - concourse.${var.gcp_domain_name}
     tls:
-    - secretName: concourse-tls
+    - secretName: concourse-tls-secret
       hosts:
       - concourse.${var.gcp_domain_name}
 
@@ -75,16 +70,24 @@ EOF
   }
 }
 
-# resource "kubernetes_secret" "concourse_tls_secret" {
-#   metadata {
-#     name      = "concourse-tls-secret"
-#   }
-#   data = {
-#     "tls.key"            = file(pathexpand("~/helm-charts/sec_concourse.key"))
-#     "tls.crt"            = file(pathexpand("~/helm-charts/sec_concourse.crt"))
-#   }
-#   type = "kubernetes.io/tls"
-# }
+resource "kubernetes_secret" "concourse_tls_secret" {
+  metadata {
+    name      = "concourse-tls-secret"
+  }
+  data = {
+    "tls.key"            = file(pathexpand("~/helm-charts/sec_concourse.key"))
+    "tls.crt"            = file(pathexpand("~/helm-charts/sec_concourse.crt"))
+  }
+  type = "kubernetes.io/tls"
+}
+
+        # github:
+        #   user: ${var.concourse["github_users"]}
+
+  # - name: CONCOURSE_GITHUB_CLIENT_ID
+  #   value: ${var.concourse["github_clien_id"]}
+  # - name: CONCOURSE_GITHUB_CLIENT_SECRET
+  #   value: ${var.concourse["github_client_secret"]}
 
 # secrets:
 #   localUsers:   ${var.concourse["local_users"]}:${var.concourse["admin_password"]}

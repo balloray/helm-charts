@@ -15,6 +15,8 @@ controller:
     ssl-redirect: "false"
   kind: DaemonSet
   service:
+    # annotations:
+    #   cloud.google.com/load-balancer-type: "internal"
     externalTrafficPolicy: "Local"
     enableHttp: false
 EOF
