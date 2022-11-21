@@ -7,12 +7,12 @@ module "concourse_chart" {
   chart_override_values   = <<EOF
 concourse:
   web:
-    externalUrl: https://concourse.${var.gcp_domain_name}
+    externalUrl: https://concourse.${var.gcp_zone_name}
     kubernetes:
       enabled: false
     vault:
       enabled: true
-      url: https://vault.${var.gcp_domain_name}
+      url: https://vault.${var.gcp_zone_name}
       useAuthParam: true
     auth:
       mainTeam:
@@ -20,7 +20,7 @@ concourse:
 web:
   env:
   - name: CONCOURSE_VAULT_URL
-    value: "https://vault.${var.gcp_domain_name}"
+    value: "https://vault.${var.gcp_zone_name}"
   - name: CONCOURSE_VAULT_AUTH_BACKEND
     value: approle
 
@@ -29,11 +29,11 @@ web:
     annotations: 
       kubernetes.io/ingress.class: nginx
     hosts: 
-    - concourse.${var.gcp_domain_name}
+    - concourse.${var.gcp_zone_name}
     tls:
     - secretName: concourse-tls-secret
       hosts:
-      - concourse.${var.gcp_domain_name}
+      - concourse.${var.gcp_zone_name}
 
 worker:
   replicas: 2

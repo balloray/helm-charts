@@ -1,4 +1,4 @@
-variable "gcp_domain_name" {
+variable "gcp_zone_name" {
   description = "the name of the domain"
   type        = string
   default     = "example.com"
