@@ -19,6 +19,11 @@ variable "deploy_name" {
   description = "-(Required) The name of the deployment"
 }
 
+variable "google_credentials_json" {
+  default     = "~/google.json"
+  description = "(Optional) Google Service account Json file."
+}
+
 variable "timeout" {
   default = "400"
 }
