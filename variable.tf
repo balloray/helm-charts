@@ -1,22 +1,31 @@
 variable "gcp_domain_name" {
-  description = "-(Required) The name of the deployment"
+  description = "the name of the domain"
+  type        = string
+  default     = "example.com"
 }
 
 variable "gcp_project_id" {
-  description = "-(Required) The name of the deployment"
+  description = "(Optional) project where VPC will be created"
+  type        = string
+  default     = "get-from-console"
 }
 
 variable "gcp_bucket_name" {
-  description = "-(Required) The name of the deployment"
+  description = "- (Required) Google Bucket to store the state file!"
+  type        = string
+  default     = "example-bucket"
 }
 
 variable "deploy_env" {
-  description = "-(Required) The name of the environment"
+  description = "(Required) Part of the prefix of the state file path!"
+  type        = string
   default     = "default"
 }
 
 variable "deploy_name" {
-  description = "-(Required) The name of the deployment"
+  description = "the name of the deployment"
+  type        = string
+  default     = "example-vpc"
 }
 
 variable "google_credentials_json" {
