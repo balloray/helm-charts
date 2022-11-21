@@ -31,13 +31,13 @@ variable "recreate_pods" {
 variable "concourse" {
   type = map
   default = {
-    vault_token            = "admin"
     local_users            = "admin"
     admin_password         = "password"
-
     postgres_username      = "admin"
     postgres_password      = "password"
     concourse_postgresql   = "concourse-postgresql"
+    vault_token            = ""
+    vault_creds            = ""
     # github_users           = "balloray"
     # github_clien_id        = "github_clien_id"
     # github_client_secret   = "github_client_secret"
