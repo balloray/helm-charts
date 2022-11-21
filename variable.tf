@@ -45,7 +45,7 @@ variable "recreate_pods" {
 variable "concourse" {
   type = map
   default = {
-    local_users            = "admin"
+    local_admin            = "admin"
     admin_password         = "password"
     postgres_username      = "admin"
     postgres_password      = "password"
