@@ -32,7 +32,7 @@ web:
     hosts: 
     - concourse-gke.${var.gcp_zone_name}
     tls:
-    - secretName: concourse-tls
+    - secretName: concourse-tls-secret
       hosts:
       - concourse-gke.${var.gcp_zone_name}
 
@@ -70,16 +70,16 @@ EOF
 }
 
 
-# resource "kubernetes_secret" "concourse_tls_secret" {
-#   metadata {
-#     name      = "concourse-tls-secret"
-#   }
-#   data = {
-#     "tls.key"            = file(pathexpand("~/helm-charts/sec_concourse_tls.key"))
-#     "tls.crt"            = file(pathexpand("~/helm-charts/sec_concourse_tls.crt"))
-#   }
-#   type = "kubernetes.io/tls"
-# }
+resource "kubernetes_secret" "concourse_tls_secret" {
+  metadata {
+    name      = "concourse-tls-secret"
+  }
+  data = {
+    "tls.key"            = file(pathexpand("~/helm-charts/sec_concourse_tls.key"))
+    "tls.crt"            = file(pathexpand("~/helm-charts/sec_concourse_tls.crt"))
+  }
+  type = "kubernetes.io/tls"
+}
 
         # github:
         #   user: ${var.concourse["github_users"]}

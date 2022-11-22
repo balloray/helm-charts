@@ -20,7 +20,7 @@ server:
       paths:
       - /
     tls:
-    - secretName: vault-tls
+    - secretName: vault-tls-secret
       hosts:
       - "vault-gke.${var.gcp_zone_name}"
   readinessProbe:
@@ -96,14 +96,14 @@ resource "kubernetes_cron_job" "vault_init_cron_job" {
   ]
 }
 
-# resource "kubernetes_secret" "vault_tls_secret" {
-#   metadata {
-#     name      = "vault-tls-secret"
-#   }
-#   data = {
-#     "tls.key"            = file(pathexpand("~/helm-charts/sec_vault_tls.key"))
-#     "tls.crt"            = file(pathexpand("~/helm-charts/sec_vault_tls.crt"))
-#   }
-#   type = "kubernetes.io/tls"
-# }
+resource "kubernetes_secret" "vault_tls_secret" {
+  metadata {
+    name      = "vault-tls-secret"
+  }
+  data = {
+    "tls.key"            = file(pathexpand("~/helm-charts/sec_vault_tls.key"))
+    "tls.crt"            = file(pathexpand("~/helm-charts/sec_vault_tls.crt"))
+  }
+  type = "kubernetes.io/tls"
+}
 
