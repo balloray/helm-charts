@@ -46,7 +46,7 @@ postgresql:
     database: ${var.concourse["concourse_postgresql"]}
 
 secrets: 
-  localUsers:   ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
+  localUsers:   ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
 
 rbac:
   create: true
@@ -88,7 +88,7 @@ resource "kubernetes_secret" "concourse_tls_secret" {
   #   value: ${var.concourse["github_client_secret"]}
 
   # create: false
-#   localUsers:   ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
+#   localUsers:   ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
 
 
 # resource "kubernetes_secret" "concourse_host_secret" {
