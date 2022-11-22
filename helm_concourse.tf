@@ -55,7 +55,7 @@ rbac:
   workerServiceAccountName: concourse-worker
 EOF
   depends_on = [
-    kubernetes_secret.concourse_tls_secret,null_resource.concourse_secrets,module.cert_manager_chart,
+    module.cert_manager_chart,
   ]
 }
 
