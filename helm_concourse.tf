@@ -66,7 +66,6 @@ EOF
 #   }
 # }
 
-
 resource "kubernetes_secret" "concourse_tls_secret" {
   metadata {
     name      = "concourse-tls-secret"
