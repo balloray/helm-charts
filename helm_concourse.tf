@@ -46,7 +46,7 @@ postgresql:
     database: ${var.concourse["concourse_postgresql"]}
 
 secrets: 
-  localUsers:   ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
+  localUsers:   ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
 
 
 rbac:
