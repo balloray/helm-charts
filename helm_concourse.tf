@@ -53,9 +53,6 @@ rbac:
   webServiceAccountName: concourse
   workerServiceAccountName: concourse-worker
 EOF
-  depends_on = [
-    module.cert_manager_chart,
-  ]
 }
 
 # Creating the secret for cert concourse

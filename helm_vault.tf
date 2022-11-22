@@ -28,9 +28,6 @@ server:
   dataStorage:
     size: 5Gi
 EOF
-  depends_on = [
-    module.cert_manager_chart,
-  ]
 }
 
 ## Creating the vault-init-cm configmap for vault-init-job to unseal the vault server after deployment
