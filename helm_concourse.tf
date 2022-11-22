@@ -7,12 +7,12 @@ module "concourse_chart" {
   chart_override_values   = <<EOF
 concourse:
   web:
-    externalUrl: https://concourse.${var.gcp_zone_name}
+    externalUrl: https://concourse-gke.${var.gcp_zone_name}
     kubernetes:
       enabled: false
     vault:
       enabled: true
-      url: https://vault.${var.gcp_zone_name}
+      url: https://vault-gke.${var.gcp_zone_name}
       useAuthParam: true
     auth:
       mainTeam:
@@ -20,7 +20,7 @@ concourse:
 web:
   env:
   - name: CONCOURSE_VAULT_URL
-    value: "https://vault.${var.gcp_zone_name}"
+    value: "https://vault-gke.${var.gcp_zone_name}"
   - name: CONCOURSE_VAULT_AUTH_BACKEND
     value: approle
 
@@ -30,11 +30,11 @@ web:
       kubernetes.io/ingress.class: nginx
       cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts: 
-    - concourse.${var.gcp_zone_name}
+    - concourse-gke.${var.gcp_zone_name}
     tls:
     - secretName: concourse-tls
       hosts:
-      - concourse.${var.gcp_zone_name}
+      - concourse-gke.${var.gcp_zone_name}
 
 worker:
   replicas: 2
@@ -46,8 +46,7 @@ postgresql:
     database: ${var.concourse["concourse_postgresql"]}
 
 secrets: 
-  localUsers:   ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
-
+  create: false
 
 rbac:
   create: true
@@ -59,18 +58,17 @@ EOF
   ]
 }
 
-# # Creating the secret for cert concourse
-# resource "null_resource" "concourse_secrets" {
-#   provisioner "local-exec" {
-#     command = <<EOF
-#     #!/bin/bash
-#     kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_admin"]}:${var.concourse["admin_password"]} --from-literal=vault-client-auth-param="${var.concourse["vault_creds"]}" --from-file=host-key=sec_host-key.key --from-file=worker-key-pub=sec_worker-key.pub.key --from-file=session-signing-key=sec_session-signing-key.key
-#     kubectl create secret generic concourse-worker --from-file=host-key-pub=sec_host-key.pub.key --from-file=worker-key=sec_worker-key.key
-# EOF
-#   }
-# }
+# Creating the secret for cert concourse
+resource "null_resource" "concourse_secrets" {
+  provisioner "local-exec" {
+    command = <<EOF
+    #!/bin/bash
+    kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_admin"]}:${var.concourse["admin_password"]} --from-literal=vault-client-auth-param="${var.concourse["vault_creds"]}" --from-file=host-key=sec_host-key.key --from-file=worker-key-pub=sec_worker-key.pub.key --from-file=session-signing-key=sec_session-signing-key.key
+    kubectl create secret generic concourse-worker --from-file=host-key-pub=sec_host-key.pub.key --from-file=worker-key=sec_worker-key.key
+EOF
+  }
+}
 
-  # create: false
 
 # resource "kubernetes_secret" "concourse_tls_secret" {
 #   metadata {
@@ -92,7 +90,7 @@ EOF
   # - name: CONCOURSE_GITHUB_CLIENT_SECRET
   #   value: ${var.concourse["github_client_secret"]}
 
-# secrets:
+  # create: false
 #   localUsers:   ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
 
 
