@@ -6,6 +6,9 @@ module "cert_manager_chart" {
   chart_repo              = "https://charts.jetstack.io"
   chart_override_values   = <<EOF
 installCRDs: true
+extraArgs:
+  - --dns01-recursive-nameservers-only
+  - --dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53
 EOF
 }
 
