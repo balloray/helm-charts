@@ -28,10 +28,11 @@ web:
     enabled: true
     annotations: 
       kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts: 
     - concourse.${var.gcp_zone_name}
     tls:
-    - secretName: concourse-tls-secret
+    - secretName: concourse-tls
       hosts:
       - concourse.${var.gcp_zone_name}
 
@@ -45,7 +46,8 @@ postgresql:
     database: ${var.concourse["concourse_postgresql"]}
 
 secrets: 
-  create: false
+  localUsers:   ${var.concourse["local_users"]}:${var.concourse["admin_password"]}
+
 
 rbac:
   create: true
@@ -53,31 +55,33 @@ rbac:
   workerServiceAccountName: concourse-worker
 EOF
   depends_on = [
-    kubernetes_secret.concourse_tls_secret,null_resource.concourse_secrets,
+    kubernetes_secret.concourse_tls_secret,null_resource.concourse_secrets,module.cert_manager_chart,
   ]
 }
 
-# Creating the secret for cert concourse
-resource "null_resource" "concourse_secrets" {
-  provisioner "local-exec" {
-    command = <<EOF
-    #!/bin/bash
-    kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_admin"]}:${var.concourse["admin_password"]} --from-literal=vault-client-auth-param="${var.concourse["vault_creds"]}" --from-file=host-key=sec_host-key.key --from-file=worker-key-pub=sec_worker-key.pub.key --from-file=session-signing-key=sec_session-signing-key.key
-    kubectl create secret generic concourse-worker --from-file=host-key-pub=sec_host-key.pub.key --from-file=worker-key=sec_worker-key.key
-EOF
-  }
-}
+# # Creating the secret for cert concourse
+# resource "null_resource" "concourse_secrets" {
+#   provisioner "local-exec" {
+#     command = <<EOF
+#     #!/bin/bash
+#     kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_admin"]}:${var.concourse["admin_password"]} --from-literal=vault-client-auth-param="${var.concourse["vault_creds"]}" --from-file=host-key=sec_host-key.key --from-file=worker-key-pub=sec_worker-key.pub.key --from-file=session-signing-key=sec_session-signing-key.key
+#     kubectl create secret generic concourse-worker --from-file=host-key-pub=sec_host-key.pub.key --from-file=worker-key=sec_worker-key.key
+# EOF
+#   }
+# }
 
-resource "kubernetes_secret" "concourse_tls_secret" {
-  metadata {
-    name      = "concourse-tls-secret"
-  }
-  data = {
-    "tls.key"            = file(pathexpand("~/helm-charts/sec_concourse_tls.key"))
-    "tls.crt"            = file(pathexpand("~/helm-charts/sec_concourse_tls.crt"))
-  }
-  type = "kubernetes.io/tls"
-}
+  # create: false
+
+# resource "kubernetes_secret" "concourse_tls_secret" {
+#   metadata {
+#     name      = "concourse-tls-secret"
+#   }
+#   data = {
+#     "tls.key"            = file(pathexpand("~/helm-charts/sec_concourse_tls.key"))
+#     "tls.crt"            = file(pathexpand("~/helm-charts/sec_concourse_tls.crt"))
+#   }
+#   type = "kubernetes.io/tls"
+# }
 
         # github:
         #   user: ${var.concourse["github_users"]}

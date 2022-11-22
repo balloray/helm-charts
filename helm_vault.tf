@@ -14,12 +14,13 @@ server:
     labels: {}
     annotations: 
       kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
     - host: "vault.${var.gcp_zone_name}"
       paths:
       - /
     tls:
-    - secretName: vault-tls-secret
+    - secretName: vault-tls
       hosts:
       - "vault.${var.gcp_zone_name}"
   readinessProbe:
@@ -27,6 +28,9 @@ server:
   dataStorage:
     size: 5Gi
 EOF
+  depends_on = [
+    module.cert_manager_chart,
+  ]
 }
 
 ## Creating the vault-init-cm configmap for vault-init-job to unseal the vault server after deployment
@@ -92,14 +96,14 @@ resource "kubernetes_cron_job" "vault_init_cron_job" {
   ]
 }
 
-resource "kubernetes_secret" "vault_tls_secret" {
-  metadata {
-    name      = "vault-tls-secret"
-  }
-  data = {
-    "tls.key"            = file(pathexpand("~/helm-charts/sec_vault_tls.key"))
-    "tls.crt"            = file(pathexpand("~/helm-charts/sec_vault_tls.crt"))
-  }
-  type = "kubernetes.io/tls"
-}
+# resource "kubernetes_secret" "vault_tls_secret" {
+#   metadata {
+#     name      = "vault-tls-secret"
+#   }
+#   data = {
+#     "tls.key"            = file(pathexpand("~/helm-charts/sec_vault_tls.key"))
+#     "tls.crt"            = file(pathexpand("~/helm-charts/sec_vault_tls.crt"))
+#   }
+#   type = "kubernetes.io/tls"
+# }
 
