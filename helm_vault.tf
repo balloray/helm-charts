@@ -104,6 +104,22 @@ resource "kubernetes_secret" "vault_tls_secret" {
   type = "kubernetes.io/tls"
 }
 
+resource "kubernetes_service_account" "common_service_account" {
+  metadata {
+    name      = "common-service-account"
+  }
+  secret {
+    name = kubernetes_secret.common_service_account_secret.metadata.0.name
+  }
+  automount_service_account_token = true
+}
+
+resource "kubernetes_secret" "common_service_account_secret" {
+  metadata {
+    name      = "common-service-account-secret"
+  }
+}
+
 ## Creating the secret to access GCP 
 resource "kubernetes_secret" "gcp_service_account" {
   metadata {
