@@ -9,7 +9,6 @@ controller:
   config:
     use-forwarded-headers: "true"
     forwarded-for-header: "X-Forwarded-For"
-
     ## Need for cert managers http challengers
     ## https://github.com/fuchicorp/common_tools/issues/767
     ssl-redirect: "false"
