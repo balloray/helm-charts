@@ -19,6 +19,7 @@ controller:
     enableHttp: false
 EOF
 }
-    # loadBalancerIP: "34.69.143.228"
+
+    # loadBalancerIP: "10.246.170.75"
     # annotations:
     #   cloud.google.com/load-balancer-type: "internal"
