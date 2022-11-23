@@ -119,14 +119,3 @@ resource "kubernetes_secret" "common_service_account_secret" {
     name      = "common-service-account-secret"
   }
 }
-
-## Creating the secret to access GCP 
-resource "kubernetes_secret" "gcp_service_account" {
-  metadata {
-    name      = "google-service-account"
-  }
-  data = {
-    "credentials.json" = file(pathexpand("~/google.json"))
-  }
-  type = "generic"
-}
