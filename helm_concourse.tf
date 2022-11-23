@@ -28,7 +28,6 @@ web:
     enabled: true
     annotations: 
       kubernetes.io/ingress.class: nginx
-      cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts: 
     - concourse-gke.${var.gcp_zone_name}
     tls:

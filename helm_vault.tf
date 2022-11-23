@@ -14,7 +14,6 @@ server:
     labels: {}
     annotations: 
       kubernetes.io/ingress.class: nginx
-      cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
     - host: "vault-gke.${var.gcp_zone_name}"
       paths:
