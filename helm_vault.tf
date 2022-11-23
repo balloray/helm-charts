@@ -103,3 +103,14 @@ resource "kubernetes_secret" "vault_tls_secret" {
   }
   type = "kubernetes.io/tls"
 }
+
+## Creating the secret to access GCP 
+resource "kubernetes_secret" "gcp_service_account" {
+  metadata {
+    name      = "google-service-account"
+  }
+  data = {
+    "credentials.json" = file(pathexpand("~/google.json"))
+  }
+  type = "generic"
+}
