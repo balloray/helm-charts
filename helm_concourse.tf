@@ -55,17 +55,6 @@ rbac:
 EOF
 }
 
-# # Creating the secret for cert concourse
-# resource "null_resource" "concourse_secrets" {
-#   provisioner "local-exec" {
-#     command = <<EOF
-#     #!/bin/bash
-#     kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_admin"]}:${var.concourse["admin_password"]} --from-literal=vault-client-auth-param="${var.concourse["vault_creds"]}" --from-file=host-key=sec_host-key.key --from-file=worker-key-pub=sec_worker-key.pub.key --from-file=session-signing-key=sec_session-signing-key.key
-#     kubectl create secret generic concourse-worker --from-file=host-key-pub=sec_host-key.pub.key --from-file=worker-key=sec_worker-key.key
-# EOF
-#   }
-# }
-
 resource "kubernetes_secret" "concourse_tls_secret" {
   metadata {
     name      = "concourse-tls-secret"
@@ -76,6 +65,17 @@ resource "kubernetes_secret" "concourse_tls_secret" {
   }
   type = "kubernetes.io/tls"
 }
+
+# # Creating the secret for cert concourse
+# resource "null_resource" "concourse_secrets" {
+#   provisioner "local-exec" {
+#     command = <<EOF
+#     #!/bin/bash
+#     kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_admin"]}:${var.concourse["admin_password"]} --from-literal=vault-client-auth-param="${var.concourse["vault_creds"]}" --from-file=host-key=sec_host-key.key --from-file=worker-key-pub=sec_worker-key.pub.key --from-file=session-signing-key=sec_session-signing-key.key
+#     kubectl create secret generic concourse-worker --from-file=host-key-pub=sec_host-key.pub.key --from-file=worker-key=sec_worker-key.key
+# EOF
+#   }
+# }
 
         # github:
         #   user: ${var.concourse["github_users"]}

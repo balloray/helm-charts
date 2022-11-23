@@ -103,4 +103,3 @@ resource "kubernetes_secret" "vault_tls_secret" {
   }
   type = "kubernetes.io/tls"
 }
-
