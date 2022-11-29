@@ -55,6 +55,7 @@ EOF
 
 }
 
+# Creating the secret for concourse chart
 resource "kubernetes_secret" "concourse_tls_secret" {
   metadata {
     name      = "concourse-tls-secret"
@@ -66,7 +67,7 @@ resource "kubernetes_secret" "concourse_tls_secret" {
   type = "kubernetes.io/tls"
 }
 
-# Creating the secret for cert concourse
+# Creating the secret for tls-cert concourse
 resource "null_resource" "concourse_secret" {
   provisioner "local-exec" {
     command = <<EOF
