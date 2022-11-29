@@ -51,6 +51,8 @@ variable "concourse" {
     postgres_password      = "password"
     concourse_postgresql   = "concourse-postgresql"
     vault_creds            = ""
+    credhub_id             = ""
+    credhub_secret         = ""
     # vault_token            = ""
     # github_users           = "balloray"
     # github_clien_id        = "github_clien_id"

@@ -10,20 +10,20 @@ concourse:
     externalUrl: https://concourse-gke.${var.gcp_zone_name}
     kubernetes:
       enabled: false
+    auth:
+      mainTeam:
+        localUser: ${var.concourse["local_admin"]}
     vault:
       enabled: true
       url: https://vault-gke.${var.gcp_zone_name}
       useAuthParam: true
-    auth:
-      mainTeam:
-        localUser: ${var.concourse["local_admin"]}
+
 web:
   env:
   - name: CONCOURSE_VAULT_URL
     value: "https://vault-gke.${var.gcp_zone_name}"
   - name: CONCOURSE_VAULT_AUTH_BACKEND
     value: approle
-
   ingress:
     enabled: true
     annotations: 
@@ -52,9 +52,7 @@ rbac:
   webServiceAccountName: concourse
   workerServiceAccountName: concourse-worker
 EOF
-  depends_on = [
-    module.vault_chart,null_resource.concourse_secrets,
-  ]
+
 }
 
 resource "kubernetes_secret" "concourse_tls_secret" {
@@ -69,7 +67,7 @@ resource "kubernetes_secret" "concourse_tls_secret" {
 }
 
 # Creating the secret for cert concourse
-resource "null_resource" "concourse_secrets" {
+resource "null_resource" "concourse_secret" {
   provisioner "local-exec" {
     command = <<EOF
     #!/bin/bash
@@ -78,6 +76,25 @@ resource "null_resource" "concourse_secrets" {
 EOF
   }
 }
+
+    # vault:
+    #   enabled: true
+    #   url: https://vault-gke.${var.gcp_zone_name}
+    #   useAuthParam: true
+    # credhub:
+    #   enabled: true
+    #   url: "https://credhub-gke.${var.gcp_zone_name}"
+
+  # env:
+  # - name: CONCOURSE_VAULT_URL
+  #   value: "https://vault-gke.${var.gcp_zone_name}"
+  # - name: CONCOURSE_VAULT_AUTH_BACKEND
+  #   value: approle
+
+  # credhubCaCert:
+  # credhubClientid: ${var.concourse["credhub_id"]}
+  # credhubClientSecret: ${var.concourse["credhub_secret"]}
+  # credhubClientCert:
 
         # github:
         #   user: ${var.concourse["github_users"]}
@@ -89,7 +106,9 @@ EOF
   #   value: ${var.concourse["github_client_secret"]}
 
   # create: false
-#   localUsers:   ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
+  # localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
+  # credhubClientId: ${var.concourse["credhub_id"]}
+  # credhubClientSecret: ${var.concourse["credhub_secret"]}
 
 
 # resource "kubernetes_secret" "concourse_host_secret" {
@@ -116,3 +135,7 @@ EOF
 #   }
 #   type = "Opague"
 # }
+
+  # depends_on = [
+  #   module.vault_chart,
+  # ]
