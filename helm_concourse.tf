@@ -36,7 +36,7 @@ web:
       - concourse-gke.${var.gcp_zone_name}
 
 worker:
-  replicas: 2
+  replicas: 3
 
 postgresql:
   auth:
@@ -68,7 +68,7 @@ resource "kubernetes_secret" "concourse_tls_secret" {
 }
 
 # Creating the secret for tls-cert concourse
-resource "null_resource" "concourse_secret" {
+resource "null_resource" "concourse_secrets" {
   provisioner "local-exec" {
     command = <<EOF
     #!/bin/bash
