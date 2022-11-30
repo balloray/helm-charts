@@ -1,5 +1,5 @@
 module "nginx_chart" {
-  source                  = "github.com/balloray/helm-chart/module"
+  source                  = "github.com/balloray/helm/remote/module"
   chart_name              = "ingress-controller"
   chart_path              = "ingress-nginx"
   chart_version           = "4.0.19"

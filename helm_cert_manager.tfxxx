@@ -1,5 +1,5 @@
 module "cert_manager_chart" {
-  source                  = "github.com/balloray/helm-chart/module"
+  source                  = "github.com/balloray/helm/remote/module"
   chart_name              = "cert-manager"
   chart_path              = "cert-manager"
   chart_version           = "1.7.2"

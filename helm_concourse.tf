@@ -1,5 +1,5 @@
 module "concourse_chart" {
-  source                  = "github.com/balloray/helm-chart/module"
+  source                  = "github.com/balloray/helm/remote/module"
   chart_name              = "concourse"
   chart_path              = "concourse"
   chart_version           = "17.0.37"

@@ -1,5 +1,5 @@
 module "vault_chart" {
-  source                  = "github.com/balloray/helm-chart/module"
+  source                  = "github.com/balloray/helm/remote/module"
   chart_name              = "vault"
   chart_path              = "vault"
   chart_version           = "0.19.0"
