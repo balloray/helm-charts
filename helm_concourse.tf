@@ -8,11 +8,11 @@ module "concourse_chart" {
 concourse:
   web:
     externalUrl: https://concourse-gke.${var.gcp_zone_name}
-    kubernetes:
-      enabled: false
     auth:
       mainTeam:
         localUser: ${var.concourse["local_admin"]}
+    kubernetes:
+      enabled: false
     vault:
       enabled: true
       url: https://vault-gke.${var.gcp_zone_name}
