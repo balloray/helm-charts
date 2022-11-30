@@ -2,7 +2,7 @@ module "concourse_chart" {
   source                  = "github.com/balloray/helm/remote/module"
   chart_name              = "concourse"
   chart_path              = "concourse"
-  chart_version           = "14.6.0"
+  chart_version           = "17.0.37"
   chart_repo              = "https://concourse-charts.storage.googleapis.com"
   chart_override_values   = <<EOF
 concourse:
