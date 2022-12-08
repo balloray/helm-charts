@@ -19,7 +19,7 @@ jobs:
         CF_USER: ((var))
       image_resource:
         type: registry-image
-        source: { repository: balloray/pcf-pushtool, tag: 0.04 }
+        source: { repository: balloray/pcf-pushtool, tag: latest }
       run:
         path: bash
         args:

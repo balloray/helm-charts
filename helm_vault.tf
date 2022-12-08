@@ -1,5 +1,5 @@
 module "vault_chart" {
-  source                  = "github.com/balloray/helm-chart/module"
+  source                  = "github.com/balloray/helm/remote/module"
   chart_name              = "vault"
   chart_path              = "vault"
   chart_version           = "0.19.0"
@@ -7,7 +7,7 @@ module "vault_chart" {
   chart_override_values   = <<EOF
 injector:
   enabled: false
-  # externalVaultAddr: "vault.${var.gcp_domain_name}"
+  # externalVaultAddr: "vault-gke.${var.gcp_zone_name}"
 server:
   ingress:
     enabled: true
@@ -15,13 +15,13 @@ server:
     annotations: 
       kubernetes.io/ingress.class: nginx
     hosts:
-    - host: "vault.${var.gcp_domain_name}"
+    - host: "vault-gke.${var.gcp_zone_name}"
       paths:
       - /
     tls:
     - secretName: vault-tls-secret
       hosts:
-      - "vault.${var.gcp_domain_name}"
+      - "vault-gke.${var.gcp_zone_name}"
   readinessProbe:
     enabled: false
   dataStorage:
@@ -97,9 +97,24 @@ resource "kubernetes_secret" "vault_tls_secret" {
     name      = "vault-tls-secret"
   }
   data = {
-    "tls.key"            = file(pathexpand("~/helm-charts/sec_vault.key"))
-    "tls.crt"            = file(pathexpand("~/helm-charts/sec_vault.crt"))
+    "tls.key"            = file(pathexpand("~/helm-charts/sec_vault_tls.key"))
+    "tls.crt"            = file(pathexpand("~/helm-charts/sec_vault_tls.crt"))
   }
   type = "kubernetes.io/tls"
 }
 
+resource "kubernetes_service_account" "common_service_account" {
+  metadata {
+    name      = "common-service-account"
+  }
+  secret {
+    name = kubernetes_secret.common_service_account_secret.metadata.0.name
+  }
+  automount_service_account_token = true
+}
+
+resource "kubernetes_secret" "common_service_account_secret" {
+  metadata {
+    name      = "common-service-account-secret"
+  }
+}

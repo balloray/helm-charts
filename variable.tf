@@ -1,22 +1,36 @@
-variable "gcp_domain_name" {
-  description = "-(Required) The name of the deployment"
+variable "gcp_zone_name" {
+  description = "the name of the domain"
+  type        = string
+  default     = "example.com"
 }
 
 variable "gcp_project_id" {
-  description = "-(Required) The name of the deployment"
+  description = "(Optional) project where VPC will be created"
+  type        = string
+  default     = "get-from-console"
 }
 
 variable "gcp_bucket_name" {
-  description = "-(Required) The name of the deployment"
+  description = "- (Required) Google Bucket to store the state file!"
+  type        = string
+  default     = "example-bucket"
 }
 
 variable "deploy_env" {
-  description = "-(Required) The name of the environment"
+  description = "(Required) Part of the prefix of the state file path!"
+  type        = string
   default     = "default"
 }
 
 variable "deploy_name" {
-  description = "-(Required) The name of the deployment"
+  description = "the name of the deployment"
+  type        = string
+  default     = "example-vpc"
+}
+
+variable "google_credentials_json" {
+  default     = "~/google.json"
+  description = "(Optional) Google Service account Json file."
 }
 
 variable "timeout" {
@@ -31,15 +45,18 @@ variable "recreate_pods" {
 variable "concourse" {
   type = map
   default = {
-    vault_token            = "admin"
-    local_users            = "admin"
+    local_admin            = "admin"
     admin_password         = "password"
-    github_users           = "balloray"
     postgres_username      = "admin"
     postgres_password      = "password"
     concourse_postgresql   = "concourse-postgresql"
-    github_clien_id        = "github_clien_id"
-    github_client_secret   = "github_client_secret"
+    vault_creds            = ""
+    credhub_id             = ""
+    credhub_secret         = ""
+    # vault_token            = ""
+    # github_users           = "balloray"
+    # github_clien_id        = "github_clien_id"
+    # github_client_secret   = "github_client_secret"
     # host_key               = ""
     # host_key_pub           = ""
     # worker_key             = ""
