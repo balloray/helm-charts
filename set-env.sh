@@ -19,12 +19,12 @@ then
 fi
 if [ -z "$BUCKET" ]
 then
-  echo "setenv: 'google_bucket_name' variable not set in configuration file."
+  echo "setenv: 'gcp_bucket_name' variable not set in configuration file."
   return 1
 fi
 if [ -z "$PROJECT" ]
 then
-    echo "setenv: 'google_project_id' variable not set in configuration file."
+    echo "setenv: 'gcp_project_id' variable not set in configuration file."
     return 1
 fi
 if [ -z "$CREDENTIALS" ]
@@ -34,7 +34,7 @@ then
 fi
 if [ -z "$DEPLOYMENT" ]
 then
-    echo "setenv: 'deployment_name' variable not set in configuration file."
+    echo "setenv: 'deploy_name' variable not set in configuration file."
     return 1
 fi
 cat << EOF > "$DIR/backend.tf"

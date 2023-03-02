@@ -47,9 +47,9 @@ variable "concourse" {
   default = {
     local_admin            = "admin"
     admin_password         = "password"
-    postgres_username      = "admin"
-    postgres_password      = "password"
-    concourse_postgresql   = "concourse-postgresql"
+    postgres_user          = "admin"
+    postgres_passwd        = "password"
+    postgres_db            = "concourse-postgresql"
     vault_creds            = ""
     credhub_id             = ""
     credhub_secret         = ""

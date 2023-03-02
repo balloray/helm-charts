@@ -12,7 +12,7 @@ spec:
     solvers:
     - dns01:
         cloudDNS:
-          project: sandbox-366619
+          project: sandbox-372518
           serviceAccountSecretRef:
             key: credentials.json
             name: google-service-account
