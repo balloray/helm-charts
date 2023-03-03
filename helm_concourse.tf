@@ -13,7 +13,8 @@ concourse:
         localUser: ${var.concourse["local_admin"]}
     kubernetes:
       teams:
-      - sbx
+        - sbx
+        - my-team
 
 web:
   env:
@@ -49,6 +50,37 @@ rbac:
   workerServiceAccountName: concourse-worker
 EOF
 
+}
+
+resource "kubernetes_cluster_role" "concourse_cluster_role" {
+  metadata {
+    name = "web-role"
+    labels = {
+      "app" = "concourse-web"
+    }
+  }
+  rule {
+    api_groups = [""]
+    resources  = ["secrets"]
+    verbs      = ["get"]
+  }
+}
+resource "kubernetes_cluster_role_binding" "concourse_cluster_role_binding" {
+  metadata {
+    name = "web-rolebinding"
+    labels = {
+      "app" = "concourse-web"
+    }
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "web-role"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "concourse-web"
+  }
 }
 
 # # Creating the tls secret for concourse chart
