@@ -30,7 +30,7 @@ resource "kubernetes_secret" "velero_secret" {
     name      = "velero-secret"
   }
   data = {
-    cloud = file(pathexpand("~/credentials-veleroz"))
+    cloud = file(pathexpand("~/velero-gcp-sa.txt"))
   }
   type = "generic"
 }

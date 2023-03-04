@@ -13,7 +13,6 @@ concourse:
         localUser: ${var.concourse["local_admin"]}
     kubernetes:
       teams:
-        - sbx
         - my-team
 
 web:
