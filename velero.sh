@@ -31,5 +31,5 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 gsutil iam ch serviceAccount:$SERVICE_ACCOUNT_EMAIL:objectAdmin gs://${BUCKET}
 
-gcloud iam service-accounts keys create credentials-veleroz \
+gcloud iam service-accounts keys create velero-gcp-sa.txt \
     --iam-account $SERVICE_ACCOUNT_EMAIL
