@@ -66,3 +66,13 @@ variable "concourse" {
 
   description = "-(Optional) The WikiJs map configuration."
 }
+
+# variable "host-key" {}
+
+# variable "host-key-pub" {}
+
+# variable "worker-key" {}
+
+# variable "worker-key-pub" {}
+
+# variable "session-signing-key" {}

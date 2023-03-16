@@ -41,7 +41,7 @@ postgresql:
     database: ${var.concourse["postgres_db"]}
 
 secrets: 
-  localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
+  create: false
 
 rbac:
   create: true
@@ -64,6 +64,7 @@ resource "kubernetes_cluster_role" "concourse_cluster_role" {
     verbs      = ["get"]
   }
 }
+
 resource "kubernetes_cluster_role_binding" "concourse_cluster_role_binding" {
   metadata {
     name = "web-rolebinding"
@@ -82,28 +83,17 @@ resource "kubernetes_cluster_role_binding" "concourse_cluster_role_binding" {
   }
 }
 
-# # Creating the tls secret for concourse chart
-# resource "kubernetes_secret" "concourse_tls_secret" {
-#   metadata {
-#     name      = "concourse-tls-secret"
-#   }
-#   data = {
-#     "tls.key"            = file(pathexpand("~/helm-charts/sec_concourse_tls.key"))
-#     "tls.crt"            = file(pathexpand("~/helm-charts/sec_concourse_tls.crt"))
-#   }
-#   type = "kubernetes.io/tls"
-# }
 
-# ##Creating the secret for concourse
-# resource "null_resource" "concourse_secrets" {
-#   provisioner "local-exec" {
-#     command = <<EOF
-#     #!/bin/bash
-#     kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_admin"]}:${var.concourse["admin_password"]} --from-file=host-key=sec_host-key.key --from-file=worker-key-pub=sec_worker-key.pub.key --from-file=session-signing-key=sec_session-signing-key.key
-#     kubectl create secret generic concourse-worker --from-file=host-key-pub=sec_host-key.pub.key --from-file=worker-key=sec_worker-key.key
-# EOF
-#   }
-# }
+##Creating the secret for concourse
+resource "null_resource" "concourse_secret" {
+  provisioner "local-exec" {
+    command = <<EOF
+    #!/bin/bash
+    kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_admin"]}:${var.concourse["admin_password"]} --from-file=host-key=sec-host-key.key --from-file=worker-key-pub=sec-worker-key.pub.key --from-file=session-signing-key=sec-session-signing-key.key
+    kubectl create secret generic concourse-worker --from-file=host-key-pub=sec-host-key.pub.key --from-file=worker-key=sec-worker-key.key
+EOF
+  }
+}
 
 # # Creating the secret for tls-cert concourse
 # resource "null_resource" "concourse_secrets" {
@@ -189,3 +179,44 @@ resource "kubernetes_cluster_role_binding" "concourse_cluster_role_binding" {
   #   value: "https://vault-gke.${var.gcp_zone_name}"
   # - name: CONCOURSE_VAULT_AUTH_BACKEND
   #   value: approle
+
+
+  # localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
+
+
+  # hostKey: |-
+  #   base64decode("${var.host-key}")
+  # hostKeyPub: |-
+  #   base64decode("${var.host-key-pub}")
+  # workerKey: |-
+  #   base64decode("${var.worker-key}")
+  # workerKeyPub: |-
+  #   base64decode("${var.worker-key-pub}")
+  # sessionSigningKey: |-
+  #   base64decode("${var.session-signing-key}")
+
+
+  # hostKey: |-
+  #   ${var.host-key}
+  # hostKeyPub: |-
+  #   ${var.host-key-pub}
+  # workerKey: |-
+  #   ${var.worker-key}
+  # workerKeyPub: |-
+  #   ${var.worker-key-pub}
+  # sessionSigningKey: |-
+  #   ${var.session-signing-key}
+
+# secrets: 
+#   create: false
+#   localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
+#   hostKey: |-
+#     base64decode("${var.host-key}")
+#   hostKeyPub: |-
+#     base64decode("${var.host-key-pub}")
+#   workerKey: |-
+#     base64decode("${var.worker-key}")
+#   workerKeyPub: |-
+#     base64decode("${var.worker-key-pub}")
+#   sessionSigningKey: |-
+#     base64decode("${var.session-signing-key}")
