@@ -1,10 +1,10 @@
 module "concourse_chart" {
-  source                  = "github.com/balloray/helm/remote/module"
+  source                  = "github.com/balloray/helm/local/module"
   chart_name              = "concourse"
-  chart_path              = "concourse"
-  chart_version           = "17.0.37"
-  chart_repo              = "https://concourse-charts.storage.googleapis.com"
+  chart_path              = "./charts/concourse-helm/charts"
   chart_override_values   = <<EOF
+image: tanzutap/concourse
+imageTag: 7.4-ubuntu
 concourse:
   web:
     externalUrl: https://concourse.${var.gcp_zone_name}
@@ -35,6 +35,12 @@ worker:
   replicas: 3
 
 postgresql:
+  image:
+    registry: docker.io
+    repository: tanzutap/postgres
+    tag: latest
+  volumePermissions:
+    enabled: true 
   auth:
     username: ${var.concourse["postgres_user"]}
     password: ${var.concourse["postgres_passwd"]}
@@ -50,39 +56,6 @@ rbac:
 EOF
 
 }
-
-resource "kubernetes_cluster_role" "concourse_cluster_role" {
-  metadata {
-    name = "web-role"
-    labels = {
-      "app" = "concourse-web"
-    }
-  }
-  rule {
-    api_groups = [""]
-    resources  = ["secrets"]
-    verbs      = ["get"]
-  }
-}
-
-resource "kubernetes_cluster_role_binding" "concourse_cluster_role_binding" {
-  metadata {
-    name = "web-rolebinding"
-    labels = {
-      "app" = "concourse-web"
-    }
-  }
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "ClusterRole"
-    name      = "web-role"
-  }
-  subject {
-    kind      = "ServiceAccount"
-    name      = "concourse-web"
-  }
-}
-
 
 ##Creating the secret for concourse
 resource "null_resource" "concourse_secret" {
@@ -105,6 +78,41 @@ EOF
 # EOF
 #   }
 # }
+
+# resource "kubernetes_cluster_role" "concourse_cluster_role" {
+#   metadata {
+#     name = "web-role"
+#     labels = {
+#       "app" = "concourse-web"
+#     }
+#   }
+#   rule {
+#     api_groups = [""]
+#     resources  = ["secrets"]
+#     verbs      = ["get"]
+#   }
+# }
+
+# resource "kubernetes_cluster_role_binding" "concourse_cluster_role_binding" {
+#   metadata {
+#     name = "web-rolebinding"
+#     labels = {
+#       "app" = "concourse-web"
+#     }
+#   }
+#   role_ref {
+#     api_group = "rbac.authorization.k8s.io"
+#     kind      = "ClusterRole"
+#     name      = "web-role"
+#   }
+#   subject {
+#     kind      = "ServiceAccount"
+#     name      = "concourse-web"
+#   }
+# }
+
+
+
 
     # vault:
     #   enabled: true
@@ -207,8 +215,7 @@ EOF
   # sessionSigningKey: |-
   #   ${var.session-signing-key}
 
-# secrets: 
-#   create: false
+
 #   localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
 #   hostKey: |-
 #     base64decode("${var.host-key}")
@@ -220,3 +227,33 @@ EOF
 #     base64decode("${var.worker-key-pub}")
 #   sessionSigningKey: |-
 #     base64decode("${var.session-signing-key}")
+
+  # hostKey: |-
+  #   file(pathexpand("~/helm-charts/host-key.key"))
+  # hostKeyPub: |-
+  #   file(pathexpand("~/helm-charts/host-key-pub.key"))
+  # workerKey: |-
+  #   file(pathexpand("~/helm-charts/worker-key.key"))
+  # workerKeyPub: |-
+  #   file(pathexpand("~/helm-charts/worker-key-pub.key"))
+  # sessionSigningKey: |-
+  #   file(pathexpand("~/helm-charts/session-signing-key.key"))
+
+  # localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
+  # hostKey: |-
+  #   ${indent(4, data.template_file.concourse_keys.template1)}
+  # hostKeyPub: |-
+  #   ${indent(4, data.template_file.concourse_keys.template2)}
+  # workerKey: |-
+  #   ${var.worker-key}
+  # workerKeyPub: |-
+  #   ${var.worker-key-pub}
+  # sessionSigningKey: |-
+  #   ${var.session-signing-key
+
+
+  # source                  = "github.com/balloray/helm/remote/module"
+  # chart_name              = "concourse"
+  # chart_path              = "concourse"
+  # chart_version           = "17.0.37"
+  # chart_repo              = "https://concourse-charts.storage.googleapis.com"
