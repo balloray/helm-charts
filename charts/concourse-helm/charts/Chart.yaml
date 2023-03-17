@@ -1,0 +1,24 @@
+apiVersion: v2
+name: concourse
+type: application
+version: 15.6.0
+appVersion: 7.3.2
+description: Concourse is a simple and scalable CI system.
+icon: https://avatars1.githubusercontent.com/u/7809479
+keywords:
+  - ci
+  - concourse
+  - concourse.ci
+home: https://concourse-ci.org/
+sources:
+  - https://github.com/concourse/concourse-chart
+  - https://github.com/concourse/concourse
+dependencies:
+  - name: postgresql
+    version: 10.3.13
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+maintainers:
+  - name: concourse-team
+    email: concourse@vmware.com
+engine: gotpl

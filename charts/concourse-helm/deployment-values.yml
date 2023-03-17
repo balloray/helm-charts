@@ -1,0 +1,10 @@
+---
+image: tanzutap/concourse
+imageTag: 7.4-ubuntu
+imagePullSecrets: ["regcred"] # Remove if registry is public
+postgresql:
+  image:
+    registry: docker.io
+    repository: tanzutap/postgres
+    tag: latest
+    pullSecrets: ["regcred"] # Remove if registry is public
