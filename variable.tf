@@ -57,22 +57,6 @@ variable "concourse" {
     # github_users           = "balloray"
     # github_clien_id        = "github_clien_id"
     # github_client_secret   = "github_client_secret"
-    # host_key               = ""
-    # host_key_pub           = ""
-    # worker_key             = ""
-    # worker_key_pub         = ""
-    # sessions_signing_key   = ""
   }
-
   description = "-(Optional) The WikiJs map configuration."
 }
-
-# variable "host-key" {}
-
-# variable "host-key-pub" {}
-
-# variable "worker-key" {}
-
-# variable "worker-key-pub" {}
-
-# variable "session-signing-key" {}
