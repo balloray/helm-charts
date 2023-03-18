@@ -10,10 +10,10 @@ configuration:
   provider: gcp
   backupStorageLocation:
     default: true
-    name: asc-gke-backup
-    bucket: asc-gke-backup-bucket
+    name: ${var.velero["backup_storage_location"]}
+    bucket: ${var.velero["backup_storage_bucket"]}
   volumeSnapshotLocation:
-    name: asc-gke-snapshot 
+    name: ${var.velero["volume_snapshot_location"]}
 
 initContainers:
   - name: velero-plugin-for-gcp

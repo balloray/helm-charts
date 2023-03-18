@@ -60,3 +60,13 @@ variable "concourse" {
   }
   description = "-(Optional) The WikiJs map configuration."
 }
+
+variable "velero" {
+  type = map
+  default = {
+    backup_storage_location    = "backup"
+    backup_storage_bucket      = "bucket"
+    volume_snapshot_location   = "location"
+  }
+  description = "-(Optional) The WikiJs map configuration."
+}
