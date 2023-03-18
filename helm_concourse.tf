@@ -47,7 +47,17 @@ postgresql:
     database: ${var.concourse["postgres_db"]}
 
 secrets: 
-  create: false
+  localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
+  hostKey: |-
+    ${indent(4, data.template_file.host_key.rendered)}
+  hostKeyPub: |-
+    ${indent(4, data.template_file.host_key_pub.rendered)}
+  workerKey: |-
+    ${indent(4, data.template_file.worker_key.rendered)}
+  workerKeyPub: |-
+    ${indent(4, data.template_file.worker_key_pub.rendered)}
+  sessionSigningKey: |-
+    ${indent(4, data.template_file.session_signing_key.rendered)}
 
 rbac:
   create: true
@@ -57,62 +67,74 @@ EOF
 
 }
 
-##Creating the secret for concourse
-resource "null_resource" "concourse_secret" {
-  provisioner "local-exec" {
-    command = <<EOF
-    #!/bin/bash
-    kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_admin"]}:${var.concourse["admin_password"]} --from-file=host-key=sec-host-key.key --from-file=worker-key-pub=sec-worker-key.pub.key --from-file=session-signing-key=sec-session-signing-key.key
-    kubectl create secret generic concourse-worker --from-file=host-key-pub=sec-host-key.pub.key --from-file=worker-key=sec-worker-key.key
-EOF
+data "template_file" "host_key" {
+  template = file("sec-host-key.key")
+  vars     = {}
+}
+
+data "template_file" "host_key_pub" {
+  template = file("sec-host-key-pub.key")
+  vars     = {}
+}
+
+data "template_file" "worker_key" {
+  template = file("sec-worker-key.key")
+  vars     = {}
+}
+
+data "template_file" "worker_key_pub" {
+  template = file("sec-worker-key-pub.key")
+  vars     = {}
+}
+
+data "template_file" "session_signing_key" {
+  template = file("sec-session-signing-key.key")
+  vars     = {}
+}
+
+resource "kubernetes_cluster_role" "concourse_cluster_role" {
+  metadata {
+    name = "web-role"
+    labels = {
+      "app" = "concourse-web"
+    }
+  }
+  rule {
+    api_groups = [""]
+    resources  = ["secrets"]
+    verbs      = ["get"]
   }
 }
 
-# # Creating the secret for tls-cert concourse
-# resource "null_resource" "concourse_secrets" {
-#   provisioner "local-exec" {
-#     command = <<EOF
-#     #!/bin/bash
-#     kubectl create secret generic concourse-web --from-literal=local-users=${var.concourse["local_admin"]}:${var.concourse["admin_password"]} --from-literal=vault-client-auth-param="${var.concourse["vault_creds"]}" --from-file=host-key=sec_host-key.key --from-file=worker-key-pub=sec_worker-key.pub.key --from-file=session-signing-key=sec_session-signing-key.key
-#     kubectl create secret generic concourse-worker --from-file=host-key-pub=sec_host-key.pub.key --from-file=worker-key=sec_worker-key.key
-# EOF
-#   }
-# }
+resource "kubernetes_cluster_role_binding" "concourse_cluster_role_binding" {
+  metadata {
+    name = "web-rolebinding"
+    labels = {
+      "app" = "concourse-web"
+    }
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "web-role"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "concourse-web"
+  }
+}
 
-# resource "kubernetes_cluster_role" "concourse_cluster_role" {
+# # Creating the secret for tls
+# resource "kubernetes_secret" "concourse_tls_secret" {
 #   metadata {
-#     name = "web-role"
-#     labels = {
-#       "app" = "concourse-web"
-#     }
+#     name      = "concourse-tls"
 #   }
-#   rule {
-#     api_groups = [""]
-#     resources  = ["secrets"]
-#     verbs      = ["get"]
+#   data = {
+#     "tls.key"            = file(pathexpand("./sec_concourse_tls.key"))
+#     "tls.crt"            = file(pathexpand("./sec_concourse_tls.crt"))
 #   }
+#   type = "kubernetes.io/tls"
 # }
-
-# resource "kubernetes_cluster_role_binding" "concourse_cluster_role_binding" {
-#   metadata {
-#     name = "web-rolebinding"
-#     labels = {
-#       "app" = "concourse-web"
-#     }
-#   }
-#   role_ref {
-#     api_group = "rbac.authorization.k8s.io"
-#     kind      = "ClusterRole"
-#     name      = "web-role"
-#   }
-#   subject {
-#     kind      = "ServiceAccount"
-#     name      = "concourse-web"
-#   }
-# }
-
-
-
 
     # vault:
     #   enabled: true
@@ -147,32 +169,6 @@ EOF
   # credhubClientId: ${var.concourse["credhub_id"]}
   # credhubClientSecret: ${var.concourse["credhub_secret"]}
 
-
-# resource "kubernetes_secret" "concourse_host_secret" {
-#   metadata {
-#     name      = "concourse-web"
-#   }
-#   data = {
-#     "local-users"         = var.concourse["local_users"]:var.concourse["admin_password"]
-#     "host-key"            = file(pathexpand("~/helm-charts/host-key.key"))
-#     "session-signing-key" = file(pathexpand("~/helm-charts/session-signing-key.key"))
-#     "worker-key-pub"      = file(pathexpand("~/helm-charts/worker-key-pub.key"))
-
-#   }
-#   type = "Opague"
-# }
-
-# resource "kubernetes_secret" "concourse_worker_secret" {
-#   metadata {
-#     name      = "concourse-worker"
-#   }
-#   data = {
-#     "worker-key"              = file(pathexpand("~/helm-charts/worker-key.key"))
-#     "host-key-pub"            = file(pathexpand("~/helm-charts/host-key-pub.key"))
-#   }
-#   type = "Opague"
-# }
-
   # depends_on = [
   #   module.vault_chart,
   # ]
@@ -187,70 +183,6 @@ EOF
   #   value: "https://vault-gke.${var.gcp_zone_name}"
   # - name: CONCOURSE_VAULT_AUTH_BACKEND
   #   value: approle
-
-
-  # localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
-
-
-  # hostKey: |-
-  #   base64decode("${var.host-key}")
-  # hostKeyPub: |-
-  #   base64decode("${var.host-key-pub}")
-  # workerKey: |-
-  #   base64decode("${var.worker-key}")
-  # workerKeyPub: |-
-  #   base64decode("${var.worker-key-pub}")
-  # sessionSigningKey: |-
-  #   base64decode("${var.session-signing-key}")
-
-
-  # hostKey: |-
-  #   ${var.host-key}
-  # hostKeyPub: |-
-  #   ${var.host-key-pub}
-  # workerKey: |-
-  #   ${var.worker-key}
-  # workerKeyPub: |-
-  #   ${var.worker-key-pub}
-  # sessionSigningKey: |-
-  #   ${var.session-signing-key}
-
-
-#   localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
-#   hostKey: |-
-#     base64decode("${var.host-key}")
-#   hostKeyPub: |-
-#     base64decode("${var.host-key-pub}")
-#   workerKey: |-
-#     base64decode("${var.worker-key}")
-#   workerKeyPub: |-
-#     base64decode("${var.worker-key-pub}")
-#   sessionSigningKey: |-
-#     base64decode("${var.session-signing-key}")
-
-  # hostKey: |-
-  #   file(pathexpand("~/helm-charts/host-key.key"))
-  # hostKeyPub: |-
-  #   file(pathexpand("~/helm-charts/host-key-pub.key"))
-  # workerKey: |-
-  #   file(pathexpand("~/helm-charts/worker-key.key"))
-  # workerKeyPub: |-
-  #   file(pathexpand("~/helm-charts/worker-key-pub.key"))
-  # sessionSigningKey: |-
-  #   file(pathexpand("~/helm-charts/session-signing-key.key"))
-
-  # localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
-  # hostKey: |-
-  #   ${indent(4, data.template_file.concourse_keys.template1)}
-  # hostKeyPub: |-
-  #   ${indent(4, data.template_file.concourse_keys.template2)}
-  # workerKey: |-
-  #   ${var.worker-key}
-  # workerKeyPub: |-
-  #   ${var.worker-key-pub}
-  # sessionSigningKey: |-
-  #   ${var.session-signing-key
-
 
   # source                  = "github.com/balloray/helm/remote/module"
   # chart_name              = "concourse"
