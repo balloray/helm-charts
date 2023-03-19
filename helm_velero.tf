@@ -24,6 +24,7 @@ initContainers:
         name: plugins
 EOF
 }
+
 # Creating the secret for velero
 resource "kubernetes_secret" "velero_secret" {
   metadata {
