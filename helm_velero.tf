@@ -23,6 +23,9 @@ initContainers:
       - mountPath: /target
         name: plugins
 EOF
+  depends_on = [
+    kubernetes_secret.velero_secret,
+  ]
 }
 
 # Creating the secret for velero
@@ -35,3 +38,35 @@ resource "kubernetes_secret" "velero_secret" {
   }
   type = "generic"
 }
+
+##     ## Cleanup velero-sa
+resource "null_resource" "cleanup_velero_key" {
+  depends_on = [kubernetes_secret.velero_secret]
+  provisioner "local-exec" {
+    command = <<EOF
+    #!/bin/bash
+    ## Cleanup velero-sa
+    rm -rf ~/velero-gcp-sa.txt
+EOF
+  }
+}
+
+## Creating the vault-setup-cm configmap for vault-setup-job to unseal the vault server after deployment
+# resource "kubernetes_config_map" "velero_config_map" {
+#   metadata {
+#     name      = "velero-sa-cm"
+#   }
+#   data = {
+#     "setup.sh" = file("${path.module}/terraform_templates/vault/setup.sh")
+#   }
+#   depends_on = [
+#     module.vault_deploy,
+#   ]
+# }
+
+#   - name: velero-plugin-for-gcp
+#     image: velero/velero-plugin-for-gcp:v1.6.1
+#     imagePullPolicy: IfNotPresent
+#     volumeMounts:
+#       - mountPath: /target
+#         name: plugins

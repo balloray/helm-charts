@@ -7,9 +7,6 @@ reset=`tput sgr0`
 PROJECT_ID=$(gcloud config get-value project)
 
 # ## Creating the uniq bucket in GCP
-# gsutil mb -c coldline -p "$PROJECT_ID" "gs://$1"
-# ## Creating the uniq bucket in GCP
-# ## Creating the uniq bucket in GCP
 if gsutil mb -c coldline -p "$PROJECT_ID" "gs://$1" 2> /dev/null; then
     echo "${green}The bucket <$1> has been created!!${reset}"
 else
