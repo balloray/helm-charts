@@ -11,6 +11,8 @@ concourse:
     auth:
       mainTeam:
         localUser: ${var.concourse["local_admin"]}
+        github:
+          user: ${var.concourse["github_users"]}
     kubernetes:
       teams:
         - my-team
@@ -19,6 +21,10 @@ web:
   env:
   - name: CONCOURSE_KUBERNETES_IN_CLUSTER
     value: "true"
+  - name: CONCOURSE_GITHUB_CLIENT_ID
+    value: ${var.concourse["github_clien_id"]}
+  - name: CONCOURSE_GITHUB_CLIENT_SECRET
+    value: ${var.concourse["github_client_secret"]}
   ingress:
     enabled: true
     annotations: 
@@ -164,25 +170,9 @@ resource "kubernetes_cluster_role_binding" "concourse_cluster_role_binding" {
   # - name: CONCOURSE_GITHUB_CLIENT_SECRET
   #   value: ${var.concourse["github_client_secret"]}
 
-  # create: false
-  # localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
+
   # credhubClientId: ${var.concourse["credhub_id"]}
   # credhubClientSecret: ${var.concourse["credhub_secret"]}
-
-  # depends_on = [
-  #   module.vault_chart,
-  # ]
-
-      # vault:
-      # enabled: true
-      # url: https://vault-gke.${var.gcp_zone_name}
-      # useAuthParam: true
-
-  # env:
-  # - name: CONCOURSE_VAULT_URL
-  #   value: "https://vault-gke.${var.gcp_zone_name}"
-  # - name: CONCOURSE_VAULT_AUTH_BACKEND
-  #   value: approle
 
   # source                  = "github.com/balloray/helm/remote/module"
   # chart_name              = "concourse"

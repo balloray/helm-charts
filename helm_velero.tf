@@ -1,7 +1,9 @@
 module "velero_chart" {
-  source                  = "github.com/balloray/helm/local/module"
+  source                  = "github.com/balloray/helm/remote/module"
   chart_name              = "velero"
-  chart_path              = "./charts/velero/charts/velero"
+  chart_path              = "velero"
+  chart_version           = "3.1.4"
+  chart_repo             = "https://vmware-tanzu.github.io/helm-charts"
   chart_override_values   = <<EOF
 credentials:
   existingSecret: velero-secret
@@ -70,3 +72,7 @@ EOF
 #     volumeMounts:
 #       - mountPath: /target
 #         name: plugins
+
+  # source                  = "github.com/balloray/helm/local/module"
+  # chart_name              = "velero"
+  # chart_path              = "./charts/velero/charts/velero"
