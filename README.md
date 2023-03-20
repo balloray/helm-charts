@@ -38,3 +38,6 @@
    
    
    77  velero backup create  testing  --from-schedule example-schedule -n default
+
+
+    velero restore create --from-schedule  example-schedule -n default
