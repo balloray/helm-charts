@@ -36,20 +36,52 @@ resource "kubernetes_secret" "velero_secret" {
     name      = "velero-secret"
   }
   data = {
-    cloud = file(pathexpand("~/velero-gcp-sa.txt"))
+    cloud = file(pathexpand("~/velero-gcp-sa.json"))
   }
   type = "generic"
 }
 
-##     ## Cleanup velero-sa
-resource "null_resource" "cleanup_velero_key" {
-  depends_on = [kubernetes_secret.velero_secret]
-  provisioner "local-exec" {
-    command = <<EOF
-    #!/bin/bash
-    ## Cleanup velero-sa
-    rm -rf ~/velero-gcp-sa.txt
-EOF
+# ##     ## Cleanup velero-sa
+# resource "null_resource" "cleanup_velero_key" {
+#   depends_on = [kubernetes_secret.velero_secret]
+#   provisioner "local-exec" {
+#     command = <<EOF
+#     #!/bin/bash
+#     ## Cleanup velero-sa
+#     rm -rf ~/velero-gcp-sa.txt
+# EOF
+#   }
+# }
+
+resource "kubernetes_cluster_role" "concourse_cluster_role" {
+  metadata {
+    name = "velero-role"
+    labels = {
+      "app" = "velero"
+    }
+  }
+  rule {
+    api_groups = [""]
+    resources  = ["secrets"]
+    verbs      = ["get"]
+  }
+}
+
+resource "kubernetes_cluster_role_binding" "concourse_cluster_role_binding" {
+  metadata {
+    name = "velero-rolebinding"
+    labels = {
+      "app" = "velero"
+    }
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "velero-role"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "default"
   }
 }
 
