@@ -22,7 +22,7 @@ web:
   - name: CONCOURSE_KUBERNETES_IN_CLUSTER
     value: "true"
   - name: CONCOURSE_GITHUB_CLIENT_ID
-    value: ${var.concourse["github_clien_id"]}
+    value: ${var.concourse["github_client_id"]}
   - name: CONCOURSE_GITHUB_CLIENT_SECRET
     value: ${var.concourse["github_client_secret"]}
   ingress:
