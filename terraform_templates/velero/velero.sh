@@ -47,11 +47,8 @@ fi
 ## Getting email of the service account and binding the roles <roles>
 SERVICE_ACCOUNT_EMAIL=$(gcloud iam service-accounts list --filter="displayName:velero-service-account" --format='value(email)')
 
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member serviceAccount:$SERVICE_ACCOUNT_EMAIL \
-    --role projects/$PROJECT_ID/roles/velero.server
+gcloud projects add-iam-policy-binding $PROJECT_ID --member serviceAccount:$SERVICE_ACCOUNT_EMAIL --role projects/$PROJECT_ID/roles/velero.server
 
 gsutil iam ch serviceAccount:$SERVICE_ACCOUNT_EMAIL:objectAdmin gs://$1
 
-gcloud iam service-accounts keys create velero-gcp-sa.txt \
-    --iam-account $SERVICE_ACCOUNT_EMAIL
+gcloud iam service-accounts keys create velero-gcp-sa.txt --iam-account $SERVICE_ACCOUNT_EMAIL
