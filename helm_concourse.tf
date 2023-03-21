@@ -55,15 +55,15 @@ postgresql:
 secrets: 
   localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
   hostKey: |-
-    ${indent(4, data.template_file.host_key.rendered)}
+    ${indent(4, data.local_sensitive_file.host_key.content)}
   hostKeyPub: |-
-    ${indent(4, data.template_file.host_key_pub.rendered)}
+    ${indent(4, data.local_sensitive_file.host_key_pub.content)}
   workerKey: |-
-    ${indent(4, data.template_file.worker_key.rendered)}
+    ${indent(4, data.local_sensitive_file.worker_key.content)}
   workerKeyPub: |-
-    ${indent(4, data.template_file.worker_key_pub.rendered)}
+    ${indent(4, data.local_sensitive_file.worker_key_pub.content)}
   sessionSigningKey: |-
-    ${indent(4, data.template_file.session_signing_key.rendered)}
+    ${indent(4, data.local_sensitive_file.session_signing_key.content)}
 
 rbac:
   create: true
@@ -73,29 +73,25 @@ EOF
 
 }
 
-data "template_file" "host_key" {
-  template = file("sec-host-key.key")
-  vars     = {}
+data "local_sensitive_file" "host_key" {
+  filename = "${path.module}/sec-host-key.key"
 }
 
-data "template_file" "host_key_pub" {
-  template = file("sec-host-key-pub.key")
-  vars     = {}
+
+data "local_sensitive_file" "host_key_pub" {
+  filename = "${path.module}/sec-host-key-pub.key"
 }
 
-data "template_file" "worker_key" {
-  template = file("sec-worker-key.key")
-  vars     = {}
+data "local_sensitive_file" "worker_key" {
+  filename = "${path.module}/sec-worker-key.key"
 }
 
-data "template_file" "worker_key_pub" {
-  template = file("sec-worker-key-pub.key")
-  vars     = {}
+data "local_sensitive_file" "worker_key_pub" {
+  filename = "${path.module}/sec-worker-key-pub.key"
 }
 
-data "template_file" "session_signing_key" {
-  template = file("sec-session-signing-key.key")
-  vars     = {}
+data "local_sensitive_file" "session_signing_key" {
+  filename = "${path.module}/sec-session-signing-key.key"
 }
 
 # # Creating the secret for tls
