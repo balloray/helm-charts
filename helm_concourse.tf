@@ -67,7 +67,7 @@ secrets:
 
 rbac:
   create: true
-  webServiceAccountName: concourse
+  webServiceAccountName: concourse-web
   workerServiceAccountName: concourse-worker
 EOF
 
