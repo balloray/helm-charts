@@ -41,3 +41,15 @@
 
 
     velero restore create --from-schedule  example-schedule -n default
+
+
+
+
+
+vault secrets enable -version=1 -path=concourse/main kv
+vault policy write concourse ./concourse-policy.hcl
+vault auth enable approle
+vault write auth/approle/role/concourse policies=concourse period=1h
+vault read auth/approle/role/concourse/role-id
+vault write -f auth/approle/role/concourse/secret-id
+vault kv put -mount=concourse/main  my-secret key="I'M IN VAULT" 
