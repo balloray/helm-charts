@@ -7,21 +7,22 @@ module "vault_chart" {
   chart_override_values   = <<EOF
 injector:
   enabled: false
-  # externalVaultAddr: "vault-gke.${var.gcp_zone_name}"
+  # externalVaultAddr: "vault-ci.${var.gcp_zone_name}"
 server:
   ingress:
     enabled: true
     labels: {}
     annotations: 
       kubernetes.io/ingress.class: nginx
+      cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
-    - host: "vault-gke.${var.gcp_zone_name}"
+    - host: "vault-ci.${var.gcp_zone_name}"
       paths:
       - /
     tls:
-    - secretName: vault-tls-secret
+    - secretName: vault-tls
       hosts:
-      - "vault-gke.${var.gcp_zone_name}"
+      - "vault-ci.${var.gcp_zone_name}"
   readinessProbe:
     enabled: false
   dataStorage:
@@ -92,20 +93,9 @@ resource "kubernetes_cron_job" "vault_init_cron_job" {
   ]
 }
 
-resource "kubernetes_secret" "vault_tls_secret" {
-  metadata {
-    name      = "vault-tls-secret"
-  }
-  data = {
-    "tls.key"            = file(pathexpand("~/helm-charts/sec_vault_tls.key"))
-    "tls.crt"            = file(pathexpand("~/helm-charts/sec_vault_tls.crt"))
-  }
-  type = "kubernetes.io/tls"
-}
-
 resource "kubernetes_service_account" "common_service_account" {
   metadata {
-    name      = "common-service-account"
+    name      = "common-ci-service-account"
   }
   secret {
     name = kubernetes_secret.common_service_account_secret.metadata.0.name
@@ -115,6 +105,6 @@ resource "kubernetes_service_account" "common_service_account" {
 
 resource "kubernetes_secret" "common_service_account_secret" {
   metadata {
-    name      = "common-service-account-secret"
+    name      = "common-ci-service-account-secret"
   }
 }

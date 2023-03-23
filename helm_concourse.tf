@@ -14,17 +14,21 @@ concourse:
         github:
           user: ${var.concourse["github_users"]}
     kubernetes:
-      teams:
-        - my-team
+      enabled: false
+    vault:
+      enabled: true
+      url: "https://vault-ci.${var.gcp_zone_name}"
+      useAuthParam: true
 
 web:
   env:
-  - name: CONCOURSE_KUBERNETES_IN_CLUSTER
-    value: "true"
   - name: CONCOURSE_GITHUB_CLIENT_ID
     value: ${var.concourse["github_client_id"]}
   - name: CONCOURSE_GITHUB_CLIENT_SECRET
     value: ${var.concourse["github_client_secret"]}
+  - name: CONCOURSE_VAULT_AUTH_BACKEND
+    value: approle
+
   ingress:
     enabled: true
     annotations: 
@@ -54,6 +58,7 @@ postgresql:
 
 secrets: 
   localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
+  vaultAuthParam: ${var.concourse["vault_creds"]}
   hostKey: |-
     ${indent(4, data.local_sensitive_file.host_key.content)}
   hostKeyPub: |-
@@ -70,13 +75,11 @@ rbac:
   webServiceAccountName: concourse-web
   workerServiceAccountName: concourse-worker
 EOF
-
 }
 
 data "local_sensitive_file" "host_key" {
   filename = "${path.module}/sec-host-key.key"
 }
-
 
 data "local_sensitive_file" "host_key_pub" {
   filename = "${path.module}/sec-host-key-pub.key"
@@ -143,3 +146,17 @@ data "local_sensitive_file" "session_signing_key" {
   # chart_path              = "concourse"
   # chart_version           = "17.0.37"
   # chart_repo              = "https://concourse-charts.storage.googleapis.com"
+
+  # env:
+  # - name: CONCOURSE_GITHUB_CLIENT_ID
+  #   value: ${var.concourse["github_client_id"]}
+  # - name: CONCOURSE_GITHUB_CLIENT_SECRET
+  #   value: ${var.concourse["github_client_secret"]}
+  # - name: CONCOURSE_VAULT_CLIENT_TOKEN
+  #   value: ${var.concourse["vault_creds"]}
+  # - name: CONCOURSE_VAULT_AUTH_BACKEND
+  #   value: approle
+
+# secrets: 
+#   localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
+#   vaultAuthParam: ${var.concourse["vault_creds"]}
