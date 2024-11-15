@@ -59,6 +59,8 @@ sudo apt update && sudo apt install vault
 
 
 
+export VAULT_ADDR=https://vault.balloray.com
+
 vault secrets enable -version=1 -path=concourse/main kv
 
 
