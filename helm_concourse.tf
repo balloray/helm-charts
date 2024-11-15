@@ -1,4 +1,5 @@
 module "concourse_chart" {
+  chart_namespace         = "default"
   source                  = "github.com/balloray/helm/local/module"
   chart_name              = "concourse"
   chart_path              = "./charts/concourse-helm/charts"
@@ -17,7 +18,7 @@ concourse:
       enabled: false
     vault:
       enabled: true
-      url: "https://vault-ci.${var.gcp_zone_name}"
+      url: "https://vault.${var.gcp_zone_name}"
       useAuthParam: true
 
 web:
@@ -59,16 +60,16 @@ postgresql:
 secrets: 
   localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
   vaultAuthParam: ${var.concourse["vault_creds"]}
-  hostKey: |-
-    ${indent(4, data.local_sensitive_file.host_key.content)}
-  hostKeyPub: |-
-    ${indent(4, data.local_sensitive_file.host_key_pub.content)}
-  workerKey: |-
-    ${indent(4, data.local_sensitive_file.worker_key.content)}
-  workerKeyPub: |-
-    ${indent(4, data.local_sensitive_file.worker_key_pub.content)}
-  sessionSigningKey: |-
-    ${indent(4, data.local_sensitive_file.session_signing_key.content)}
+  # hostKey: |-
+  #   ${indent(4, data.local_sensitive_file.host_key.content)}
+  # hostKeyPub: |-
+  #   ${indent(4, data.local_sensitive_file.host_key_pub.content)}
+  # workerKey: |-
+  #   ${indent(4, data.local_sensitive_file.worker_key.content)}
+  # workerKeyPub: |-
+  #   ${indent(4, data.local_sensitive_file.worker_key_pub.content)}
+  # sessionSigningKey: |-
+  #   ${indent(4, data.local_sensitive_file.session_signing_key.content)}
 
 rbac:
   create: true

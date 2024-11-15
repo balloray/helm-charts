@@ -1,4 +1,5 @@
 module "vault_chart" {
+  chart_namespace         = "default"
   source                  = "github.com/balloray/helm/remote/module"
   chart_name              = "vault"
   chart_path              = "vault"
@@ -7,7 +8,7 @@ module "vault_chart" {
   chart_override_values   = <<EOF
 injector:
   enabled: false
-  # externalVaultAddr: "vault-ci.${var.gcp_zone_name}"
+  # externalVaultAddr: "vault.${var.gcp_zone_name}"
 server:
   ingress:
     enabled: true
@@ -16,13 +17,13 @@ server:
       kubernetes.io/ingress.class: nginx
       cert-manager.io/cluster-issuer: letsencrypt-prod
     hosts:
-    - host: "vault-ci.${var.gcp_zone_name}"
+    - host: "vault.${var.gcp_zone_name}"
       paths:
       - /
     tls:
     - secretName: vault-tls
       hosts:
-      - "vault-ci.${var.gcp_zone_name}"
+      - "vault.${var.gcp_zone_name}"
   readinessProbe:
     enabled: false
   dataStorage:
@@ -43,55 +44,55 @@ resource "kubernetes_config_map" "init_script_config_map" {
   ]
 }
 
-## Creating the vault-init-cron-job to unseal the vault server after deployment
-resource "kubernetes_cron_job" "vault_init_cron_job" {
-  metadata {
-    name      = "vault-init-cron-job"
-  }
+# ## Creating the vault-init-cron-job to unseal the vault server after deployment
+# resource "kubernetes_cron_job" "vault_init_cron_job" {
+#   metadata {
+#     name      = "vault-init-cron-job"
+#   }
 
-  spec {
-    concurrency_policy        = "Replace"
-    failed_jobs_history_limit = 1
-    schedule                  = "*/3 * * * *"
+#   spec {
+#     concurrency_policy        = "Replace"
+#     failed_jobs_history_limit = 1
+#     schedule                  = "*/3 * * * *"
 
-    job_template {
-      metadata {}
-      spec {
-        backoff_limit              = 2
-        ttl_seconds_after_finished = 10
-        template {
-          metadata {}
-          spec {
-            automount_service_account_token = "true"
-            service_account_name            = kubernetes_service_account.common_service_account.metadata.0.name
-            container {
-              name    = "vault-init-job"
-              image   = "vault:1.4.0"
-              command = ["/bin/sh", "-c", "sh /init/init.sh"]
-              volume_mount {
-                name       = "vault-data"
-                mount_path = "/init"
-              }
-            }
-            restart_policy = "OnFailure"
-            volume {
-              name = "vault-data"
-              config_map {
-                name = "vault-init-cm"
-              }
-            }
-          }
-        }
-        #        backoff_limit              = 10
-        active_deadline_seconds = 360
-        #        ttl_seconds_after_finished = 210
-      }
-    }
-  }
-  depends_on = [
-    kubernetes_config_map.init_script_config_map,
-  ]
-}
+#     job_template {
+#       metadata {}
+#       spec {
+#         backoff_limit              = 2
+#         ttl_seconds_after_finished = 10
+#         template {
+#           metadata {}
+#           spec {
+#             automount_service_account_token = "true"
+#             service_account_name            = kubernetes_service_account.common_service_account.metadata.0.name
+#             container {
+#               name    = "vault-init-job"
+#               image   = "vault:1.4.0"
+#               command = ["/bin/sh", "-c", "sh /init/init.sh"]
+#               volume_mount {
+#                 name       = "vault-data"
+#                 mount_path = "/init"
+#               }
+#             }
+#             restart_policy = "OnFailure"
+#             volume {
+#               name = "vault-data"
+#               config_map {
+#                 name = "vault-init-cm"
+#               }
+#             }
+#           }
+#         }
+#         #        backoff_limit              = 10
+#         active_deadline_seconds = 360
+#         #        ttl_seconds_after_finished = 210
+#       }
+#     }
+#   }
+#   depends_on = [
+#     kubernetes_config_map.init_script_config_map,
+#   ]
+# }
 
 resource "kubernetes_service_account" "common_service_account" {
   metadata {

@@ -12,7 +12,7 @@ spec:
     solvers:
     - dns01:
         cloudDNS:
-          project: fuchicorp-380
+          project: "sbx-e-438921" 
           serviceAccountSecretRef:
             key: credentials.json
             name: google-service-account
