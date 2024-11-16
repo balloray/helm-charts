@@ -3,6 +3,8 @@ module "concourse_chart" {
   source                  = "github.com/balloray/helm/local/module"
   chart_name              = "concourse"
   chart_path              = "./charts/concourse-helm/charts"
+  # chart_version           = "17.4.0"
+  # chart_repo              = "https://concourse-charts.storage.googleapis.com"
   chart_override_values   = <<EOF
 image: tanzutap/concourse
 imageTag: 7.4-ubuntu
@@ -20,6 +22,8 @@ concourse:
       enabled: true
       url: "https://vault.${var.gcp_zone_name}"
       useAuthParam: true
+  worker:
+    runtime: containerd
 
 web:
   env:
@@ -43,7 +47,7 @@ web:
       - concourse.${var.gcp_zone_name}
 
 worker:
-  replicas: 3
+  replicas: 2
 
 postgresql:
   image:
@@ -60,16 +64,6 @@ postgresql:
 secrets: 
   localUsers: ${var.concourse["local_admin"]}:${var.concourse["admin_password"]}
   vaultAuthParam: ${var.concourse["vault_creds"]}
-  # hostKey: |-
-  #   ${indent(4, data.local_sensitive_file.host_key.content)}
-  # hostKeyPub: |-
-  #   ${indent(4, data.local_sensitive_file.host_key_pub.content)}
-  # workerKey: |-
-  #   ${indent(4, data.local_sensitive_file.worker_key.content)}
-  # workerKeyPub: |-
-  #   ${indent(4, data.local_sensitive_file.worker_key_pub.content)}
-  # sessionSigningKey: |-
-  #   ${indent(4, data.local_sensitive_file.session_signing_key.content)}
 
 rbac:
   create: true
@@ -78,25 +72,25 @@ rbac:
 EOF
 }
 
-data "local_sensitive_file" "host_key" {
-  filename = "${path.module}/sec-host-key.key"
-}
+# data "local_sensitive_file" "host_key" {
+#   filename = "${path.module}/sec-host-key.key"
+# }
 
-data "local_sensitive_file" "host_key_pub" {
-  filename = "${path.module}/sec-host-key-pub.key"
-}
+# data "local_sensitive_file" "host_key_pub" {
+#   filename = "${path.module}/sec-host-key-pub.key"
+# }
 
-data "local_sensitive_file" "worker_key" {
-  filename = "${path.module}/sec-worker-key.key"
-}
+# data "local_sensitive_file" "worker_key" {
+#   filename = "${path.module}/sec-worker-key.key"
+# }
 
-data "local_sensitive_file" "worker_key_pub" {
-  filename = "${path.module}/sec-worker-key-pub.key"
-}
+# data "local_sensitive_file" "worker_key_pub" {
+#   filename = "${path.module}/sec-worker-key-pub.key"
+# }
 
-data "local_sensitive_file" "session_signing_key" {
-  filename = "${path.module}/sec-session-signing-key.key"
-}
+# data "local_sensitive_file" "session_signing_key" {
+#   filename = "${path.module}/sec-session-signing-key.key"
+# }
 
 # # Creating the secret for tls
 # resource "kubernetes_secret" "concourse_tls_secret" {

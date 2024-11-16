@@ -53,7 +53,7 @@ variable "concourse" {
     github_users           = "balloray"
     github_client_id       = "183da914aade2cf814b0"
     github_client_secret   = "7ab2803e24296953ceb66e5cc40d510fb544c493"
-    vault_creds            = ""
+    vault_creds            = "role_id:971122f2-5bff-577b-ca4f-a4e2a6ba3da3,secret_id:9d6930ae-94a0-9df2-0237-cd65e384c9b0"
     credhub_id             = ""
     credhub_secret         = ""
     # vault_token            = ""
